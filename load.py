@@ -7,7 +7,7 @@ DAY  = '01'
 MONTH = '01'
 YEAR  = '2017'
 PATH = "/home/skndr-ros/salah_stage/bateaux.csv"
-NB_CRANES = 8
+NB_CRANES = 7
 
 f = lambda hours : "00" if hours=="24" else hours
 
@@ -34,10 +34,11 @@ class Crane :
         self.to_last -= assigned
 
 class Quay : 
-    def __init__(self, type_quay, crane_assigned, time_freed): 
-        self.type_quay      = typ_quay 
+    def __init__(self, type_quay, lib, crane_assigned = None, time_freed = None): 
+        self.type_quay      = type_quay 
         self.crane_assigned = crane_assigned     # si une grue ou plus est assignee 
         self.time_freed = time_freed         # de type time
+        self.lib = lib
         
     
 class Boat : 
