@@ -30,6 +30,8 @@ class Crane :
 		self.lib = lib
 	def __gt__(self, autre): 
 		return self.time_freed > autre.time_freed 
+	def update(self) : 
+		self.time_freed += self.delta_freed
 
 
 class Quay : 
