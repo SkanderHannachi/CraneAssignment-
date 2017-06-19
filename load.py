@@ -6,7 +6,7 @@ import csv
 DAY  = '01' 
 MONTH = '01'
 YEAR  = '2017'
-PATH = "/home/skndr-ros/salah_stage/bateaux.csv"
+PATH = "bateaux.csv"
 NB_CRANES = 7
 
 f = lambda hours : "00" if hours=="24" else hours
@@ -25,13 +25,12 @@ def read_csv(path) :
 class Crane :
     """La classe grue. Elle contient l'information sur le nombre de gruess 
     affectees """
-    def __init__(self) : 
+    def __init__(self, lib) : 
         self.to_last = 7       #combien de grues restantes
-        self.ls_boats = [] 
-        self.ls_quays =  [] 
-    
-    def update(self, assigned) : 
-        self.to_last -= assigned
+        self.time_freed  =  datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M')
+        self.delta_freed = datetime.timedelta(seconds = 0 )
+        self.lib = lib
+
 
 class Quay : 
     def __init__(self, type_quay, lib): 
