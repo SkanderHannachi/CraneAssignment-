@@ -23,13 +23,13 @@ def read_csv(path) :
     return ls
 
 class Crane :
-    """La classe grue. Elle contient l'information sur le nombre de gruess 
-    affectees """
-    def __init__(self, lib) : 
-        self.to_last = 7       #combien de grues restantes
-        self.time_freed  =  datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M')
-        self.delta_freed = datetime.timedelta(seconds = 0 )
-        self.lib = lib
+	"""La classe grue. Elle contient l'information sur le nombre de gruess affectees """
+	def __init__(self, lib) : 
+		self.time_freed  =  datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M')
+		self.delta_freed = datetime.timedelta(seconds = 0 )
+		self.lib = lib
+	def __gt__(self, autre): 
+		return self.time_freed > autre.time_freed 
 
 
 class Quay : 
