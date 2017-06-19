@@ -26,19 +26,20 @@ class Crane :
     """La classe grue. Elle contient l'information sur le nombre de gruess 
     affectees """
     def __init__(self) : 
-        self.to_last = to_last       #combien de grues restantes
-        self.ls_boats = ls_boats 
-        self.ls_quays = ls_quays 
+        self.to_last = 7       #combien de grues restantes
+        self.ls_boats = [] 
+        self.ls_quays =  [] 
     
     def update(self, assigned) : 
         self.to_last -= assigned
 
 class Quay : 
-    def __init__(self, type_quay, lib, crane_assigned = None, time_freed = None): 
+    def __init__(self, type_quay, lib): 
         self.type_quay      = type_quay 
-        self.crane_assigned = crane_assigned     # si une grue ou plus est assignee 
-        self.time_freed = time_freed         # de type time
+        self.crane_assigned = False     # si une grue ou plus est assignee 
+        self.time_freed = datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M')         # de type time
         self.lib = lib
+        self.queue= False
         
     
 class Boat : 
@@ -46,8 +47,8 @@ class Boat :
         self.type_boat = type_boat 
         self.arrival_time = self.convert_time(arrival) 
         self.departure    = self.convert_time(departure)
-        self.capa_cont    = capa_cont
-        self.capa_remor   = capa_remor
+        self.capa_cont    = int(capa_cont)
+        self.capa_remor   = int(capa_remor) if capa_remor != '-' else 0
         self.is_departure = True if (departure[0]=="D") else False     #nous informe si le bateau possede un fenetrage ou pas
         
     def convert_time(self, ch) : 
