@@ -14,7 +14,6 @@ class Solution :
 		self.performance = self.compute()
 		self.list_boat   = list_boat                   #une liste de chaque quai accueillant chaque bateau, les quais sont numérotés
 		self.list_time   = list_time                   #une liste d'une liste des temps reservés dans chaque quai pour chaque bateau
-		self.list_cranes = list_cranes                 #une liste des grues assignées dans chaque quay pour chaque bateau.
 		self.indiv_list  = zip(self.list_boat, self.list_time, self.list_cranes) #un individu : ie la variable qui regroupe tout
         
 	def compute(self) : 

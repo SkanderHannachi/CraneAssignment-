@@ -12,139 +12,97 @@ ls_boats = []
 ls_cranes_used = []
 ls_assignement = []
 quays  = [Quay(quay_nb(x),x) for x in range(1,7)]
-quays_queued = []
 cranes = [Crane(x) for x in range(1,7)]
+cranes_queued = []
 nb_crane = lambda : 2 if (rdm.random() > 0.7) else 1
 verif = lambda  boat, quay : (boat.type_boat == quay.type_quay)
+
 def sepererator() :
 	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-def find_nearest(cranes_ls, boat, number_assigned) : 
-	i = 1
-	distance = []
-	resul = []
-	for crane in cranes_ls : 
-		distance.append(abs(crane.time_freed - boat.arrival_time))
-	while ( 1 <= number_assigned) : 
-		resul.append(min(distance))
-		del cranes_ls[cranes_ls.index(crane)]
-	return resul, cranes_ls 
 
-def check_cranes_and_choose_one(boat, nb_crane_assigned) : 
-	"""fonction qui voit si y'a une/des grues de libres et sinon il regarde dans la liste d'attente et choisit la grue la plus proche pour l'assigner. La fonction renvoie une liste(d'une ou de deux au max) de grues à affecter  """
-	global cranes
-	if len(cranes) < 1 : 
-		cranes = ls_cranes_used
-		crane, cranes = find_nearest(cranes, boat, nb_crane_assigned)
-	else :
-		crane = cranes[0:nb_crane_assigned]
-		del cranes[0:nb_crane_assigned]
-		try :
-			crane_one = crane[0]
-			crane_two = crane[1]
-			crane_one = crane[0]
-			crane_two = crane[1]
-			crane_one.delta_freed = datetime.timedelta( ( 40 / 60 ) *  (boat.capa_cont/2) * 60 )
-			crane_two.delta_freed = datetime.timedelta( ( 40 / 60 ) *  (boat.capa_cont/2) * 60 )
-			crane_one.update()
-			crane_two.update()
-			ls_cranes_used.append(crane_one)
-			ls_cranes_used.append(crane_two)
-		except IndexError : 
-			crane_one = crane[0]
-			crane_one.delta_freed = datetime.timedelta( ( 40 / 60 ) *  (boat.capa_cont) * 60 )
-			crane_one.update()
-			ls_cranes_used.append(crane_one)
-	return crane_one
+def merge_quay_crane_assignement() : 
+	global ls_boats 
+	ls_boats = read_csv(PATH)
+	for boat in ls_boats : 
+		if boat.type_boat == "PC" : 
+			nb_crane_assgn = 1
+			service_time = boat.capa_cont /nb_crane_assgn
+			service_time = datetime.timedelta(0,60 * service_time)
+			
+		if boat.type_boat == "RORO" : 
+			manu = boat.capa_remor
+			min_total = ( 40 / 60 ) *  boat.capa_cont 
+			delta_assignement = max(datetime.timedelta(0,60 * min_total), datetime.timedelta(0,60 *  manu  ))
+			service_time = datetime.timedelta(0,60 *  manu  )
+			
+		Q = assign_quay(boat, service_time)
+		C = assign_crane(boat, service_time)
+		boat.starting_time = max(Q.time_freed - service_time, C.time_freed - service_time)
+		boat.ending_time = max(Q.time_freed, C.time_freed)
+		boat.ending_time = boat.departure if abs(boat.ending_time-boat.arrival_time) > abs(boat.departure-boat.arrival_time) else boat.ending_time 
+		B = boat
+		time = (B.arrival_time, B.ending_time)
+		print(str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib))
+		sepererator()
+	
 
-def find_freed_time(quay, boat) :
-	"""Prend en entree un objet quay et boat, et renvoie le temps de liberation (ie quand le bateau sera servi)  """
-	if quay.time_freed == datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M') : 
-		quay.time_freed = boat.arrival_time 
-		time = boat.arrival_time
-	else : 
-		if boat.arrival_time >= quay.time_freed :
-			time = boat.arrival_time
-			quay.time_freed = boat.arrival_time
-		elif (boat.arrival_time <= quay.time_freed) :
-			time = quay.time_freed
-	return time
 
-def assign(boat) : 
+def assign_quay(boat, service_duration) : 
 	global quays 
-	global quays_queued
 	global cranes
+
 	#creation de la liste des quays concernes 
-	concerned = [quay for quay in quays if verif(quay, boat)]
+	concerned = [quay for quay in quays if verif(boat, quay)]
 	ls_quays_free = [quay for quay in concerned if quay.queue == False] 
 	ls_quays_busy = [quay for quay in concerned if quay.queue == True] 
 	#on cree une liste contenant des tuple (quay_busy, boat)
 	if len(ls_quays_free) == 0 : 
 		distance = []
+		#print(concerned[0].type_quay)
 		for busy in ls_quays_busy : 
-			distance.append((abs(boat.arrival_time - quay.time_freed) ,busy))
+			distance.append((abs(boat.arrival_time - busy.time_freed), busy ))
 		q = min(distance, key=lambda x: x[0]) 
-		return (q[1])
-       
-def assign_to_quay(boat): 
-	ls_quay_lib = []
-	global quays
+		q = q[1]
+		q.time_freed = max(q.time_freed, boat.arrival_time)
+		q.time_freed += service_duration
+		q.queue = True
+	else : 
+		q = concerned[0]
+		#del quays[0] 
+		q.time_freed = max(q.time_freed, boat.arrival_time)
+		q.time_freed +=  service_duration
+		q.queue = True
+		ind = quays.index(q)
+		quays[ ind ] = q
+		
+		
+	return q
+
+def assign_crane(boat, service_duration): 
 	global cranes 
-	for quay in quays : 
-		"""on peut rajouter une condition pour que ce soit circulaire ET optimale """
-		if (quay.type_quay == boat.type_boat) and (quay.queue == False) :
-				if boat.type_boat == "PC" : 
-					nb_crane_assgn = nb_crane()
-					cr = check_cranes_and_choose_one(boat, nb_crane_assgn)
-					min_total = boat.capa_cont /nb_crane_assgn 
-					delta_assignement = datetime.timedelta(0,60 * min_total)
-					# penser a ajouter delta = max(delta_assignement, delta_departure)
-					quay.time_freed = boat.arrival_time  + delta_assignement
-					quay.queue = True   #mais on libere quand?
-					print(boat.type_boat+"  assigned to " + str(quay.lib)+"; type : "+quay.type_quay+"\n" " arrivant à  "+str(boat.arrival_time)+" termine à : " + str(quay.time_freed)+" et reste : "+str(quay.time_freed))
-					sepererator()
-				elif boat.type_boat == "RORO" : 
-					nb_crane_assgn = 1
-					manu = boat.capa_remor
-					min_total = ( 40 / 60 ) *  boat.capa_cont 
-					delta_assignement = max(datetime.timedelta(0,60 * min_total), datetime.timedelta(0,60 *  manu  ))
-					quay.time_freed = boat.arrival_time  + delta_assignement
-					quay.queue = True
-					print(boat.type_boat+"  assigned to " + str(quay.lib)+"; type : "+quay.type_quay+"\n" " arrive vers  "+str(boat.arrival_time)+" termine à : " + str(quay.time_freed)+" et reste :  "+str(delta_assignement))
-					sepererator()
-				return quay
-		elif (quay.type_quay == boat.type_boat) and (quay.queue == True) :
-			for busy_quay in quays : 
-				if (busy_quay.type_quay == boat.type_boat) : 
-					ls_quay_lib.append((abs(busy_quay.time_freed - boat.arrival_time), busy_quay))
-			quay = min(ls_quay_lib, key=lambda x: x[0])
-			nb_crane_assgn = nb_crane() 
-			min_total = ( 40 / 60 ) *  boat.capa_cont
-			if boat.type_boat == "RORO" : 
-				manu = boat.capa_remor
-				min_total = max(manu, min_total)
-			delta_assignement = datetime.timedelta(0,60 * min_total)
-			time_service = quay[1].time_freed
-			quay[1].time_freed = time_service  + delta_assignement  #not sure
-			print(boat.type_boat+"  assigned to " + str(quay[1].lib)+"; type : "+quay[1].type_quay + " servi à  :"+str(time_service)+" et finit à :  "+str(quay[1].time_freed)+"  de capa :"+str(boat.capa_cont)+'\n')
-			sepererator()
-			return quay[1]
+	global cranes_queued
+	service_time = boat.arrival_time
+	if len(cranes) == 0 : 
+		distance = [] 
+		for crane in cranes_queued : 
+			distance.append((abs(crane.time_freed - boat.arrival_time), crane))
+		c = min(distance, key=lambda x: x[0])
+		c[1].time_freed =boat.arrival_time + service_duration
+		cranes_queued[cranes_queued.index(c[1])] = c[1]
+		return c[1]
+	else : 
+		c = cranes[0]
+		del cranes[0]
+		c.time_freed =boat.arrival_time + service_duration 
+		c.queue = True
+		cranes_queued.append(c)
+		return c
+
+
 
 def generate() : 
-	ls_boats = read_csv(PATH)
-	solution = Solution(list_boat=[], list_time=[], list_cranes=[])
-	#construction du tableau des quais
-	i = 1  #pour le quai
-	while (len(ls_boats)>0) : 
-		i = modulo_quay(i)
-		choosen_boat = rdm.choice(ls_boats)
-		choosen_quay = assign_to_quay(choosen_boat)
-		#find_freed_time(choosen_quay, choosen_boat)
-		solution.list_boat.append(choosen_boat)
-		del ls_boats[ls_boats.index(choosen_boat)]
-		i += 1
-	#print([elem.type_boat for elem in solution.list_boat])
-	return solution 
+	merge_quay_crane_assignement()
 
 if __name__ == "__main__" : 
 	generate()

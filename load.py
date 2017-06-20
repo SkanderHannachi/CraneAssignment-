@@ -27,25 +27,26 @@ class Crane :
 		self.lib = lib
 	def __gt__(self, autre): 
 		return self.time_freed > autre.time_freed 
-	def update(self) : 
-		self.time_freed += self.delta_freed
+
 
 class Quay : 
 	def __init__(self, type_quay, lib): 
 		self.type_quay      = type_quay 
-		self.crane_assigned = False     # si une grue ou plus est assignee 
 		self.time_freed = datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M')         # de type time
 		self.lib = lib
 		self.queue= False
-            
+	def __gt__(self, autre): 
+		return self.time_freed > autre.time_freed
 class Boat : 
 	def __init__ (self,type_boat,arrival,departure,capa_cont,capa_remor) : 
 		self.type_boat = type_boat 
-		self.arrival_time = self.convert_time(arrival) 
-		self.departure    = self.convert_time(departure)
-		self.capa_cont    = int(capa_cont)
-		self.capa_remor   = int(capa_remor) if capa_remor != '-' else 0
-		self.is_departure = True if (departure[0]=="D") else False     #nous informe si le bateau possede un fenetrage ou pas
+		self.arrival_time  = self.convert_time(arrival) 
+		self.departure     = self.convert_time(departure)
+		self.starting_time = datetime.datetime.strptime( YEAR+'-'+MONTH+'-'+DAY+' '+'00:00', '%Y-%m-%d %H:%M')
+		self.ending_time   = datetime.datetime.strptime( YEAR+'-'+MONTH+'-'+DAY+' '+'00:00', '%Y-%m-%d %H:%M')
+		self.capa_cont     = int(capa_cont)
+		self.capa_remor    = int(capa_remor) if capa_remor != '-' else 0
+		self.is_departure  = True if (departure[0]=="D") else False     #nous informe si le bateau possede un fenetrage ou pas
         
 	def convert_time(self, ch) : 
 		if ch == "-" : 
