@@ -12,9 +12,10 @@ ls_boats = []
 ls_cranes_used = []
 ls_assignement = []
 quays  = [Quay(quay_nb(x),x) for x in range(1,7)]
+quays_queued = []
 cranes = [Crane(x) for x in range(1,7)]
 nb_crane = lambda : 2 if (rdm.random() > 0.7) else 1
-
+verif = lambda  boat, quay : (boat.type_boat == quay.type_quay)
 def sepererator() :
 	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
@@ -69,6 +70,21 @@ def find_freed_time(quay, boat) :
 			time = quay.time_freed
 	return time
 
+def assign(boat) : 
+	global quays 
+	global quays_queued
+	global cranes
+	#creation de la liste des quays concernes 
+	concerned = [quay for quay in quays if verif(quay, boat)]
+	ls_quays_free = [quay for quay in concerned if quay.queue == False] 
+	ls_quays_busy = [quay for quay in concerned if quay.queue == True] 
+	#on cree une liste contenant des tuple (quay_busy, boat)
+	if len(ls_quays_free) == 0 : 
+		distance = []
+		for busy in ls_quays_busy : 
+			distance.append((abs(boat.arrival_time - quay.time_freed) ,busy))
+		q = min(distance, key=lambda x: x[0]) 
+		return (q[1])
        
 def assign_to_quay(boat): 
 	ls_quay_lib = []
