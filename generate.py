@@ -3,14 +3,11 @@ pour chercher quelle crane, on raisonne comme pour les quays : on calcule la dis
 """
 import random as rdm 
 from load import * 
-from core import Solution
+#from core import Solution
 
 quay_nb = lambda x : "RORO" if x in [2,3,4,5] else "PC"
 modulo_quay = lambda x : 1 if x > 7 else x
 
-ls_boats = [] 
-ls_cranes_used = []
-ls_assignement = []
 quays  = [Quay(quay_nb(x),x) for x in range(1,7)]
 cranes = [Crane(x) for x in range(1,7)]
 cranes_queued = []
@@ -22,8 +19,8 @@ def sepererator() :
 
 
 def merge_quay_crane_assignement() : 
-	global ls_boats 
 	ls_boats = read_csv(PATH)
+	list_boat, list_time, list_quays = [], [], []
 	for boat in ls_boats : 
 		if boat.type_boat == "PC" : 
 			nb_crane_assgn = 1
@@ -45,6 +42,10 @@ def merge_quay_crane_assignement() :
 		time = (B.arrival_time, B.ending_time)
 		print(str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib))
 		sepererator()
+		list_boat.append(list_boat)
+		list_time.append((B.starting_time, B.ending_time))
+		list_quays.append(Q)
+	return list_boat, list_time, list_quays
 	
 
 
@@ -68,7 +69,7 @@ def assign_quay(boat, service_duration) :
 		q.time_freed += service_duration
 		q.queue = True
 	else : 
-		q = concerned[0]
+		q = rdm.choice(concerned)
 		#del quays[0] 
 		q.time_freed = max(q.time_freed, boat.arrival_time)
 		q.time_freed +=  service_duration
@@ -100,9 +101,6 @@ def assign_crane(boat, service_duration):
 		return c
 
 
-
-def generate() : 
-	merge_quay_crane_assignement()
 
 if __name__ == "__main__" : 
 	generate()
