@@ -3,7 +3,7 @@
 
 import random as rdm
 from load import Boat
-from generate import merge_quay_crane_assignement
+from generate import merge_quay_crane_assignement, sepererator, crisis_time
 
 NB_POPULATION = 10
 MUTATION_CROSSOVER = 0.7   #70% chance for a mutation
@@ -13,8 +13,33 @@ choose = lambda chance : rdm.random() < chance
 
 
 
-#def mutation(sol_parent_1, sol_parent_2) : 
-	#x = rdm.sample(set([1, 2, 3, 4, 5, 6]), 2)
+def mutation(adam) : 
+	global crisis_time
+	ls_boats_to_permute = adam.list_boat
+	ls_quays_to_permute = adam.list_quays
+	ls_times_to_permute = adam.list_time
+	#print(ls_boats_to_permute)
+	x = rdm.sample(ls_boats_to_permute, 2)
+	while ( (x[0].type_boat != x[1].type_boat) and (x[0] != x[1]) ):
+		x = rdm.sample(set(ls_boats_to_permute), 2) 
+	gene_one = x[0]
+	gene_two = x[1]
+	ind_gene_boat_one = ls_boats_to_permute.index(gene_one)
+	ind_gene_boat_two = ls_boats_to_permute.index(gene_two)
+	gene_quay_one = ls_quays_to_permute[ind_gene_boat_one]
+	gene_quay_two = ls_quays_to_permute[ind_gene_boat_two]
+	gene_time_one = ls_times_to_permute[ind_gene_boat_one]
+	gene_time_two = ls_times_to_permute[ind_gene_boat_two]
+	first_to_arrive = min(gene_time_one[0], gene_time_two[0])
+	sepererator()
+	sepererator()
+	sepererator()
+	print("on va permuter un "+str(gene_one.type_boat)+" ; "+str(gene_one.starting_time)+" avec un "+str(gene_two.type_boat)+" ; "+str(gene_two.starting_time)+ " le premier arrive à : "+str(gene_one.arrival_time)+" et le deuxieme arrive à : "+str(gene_two.arrival_time)+"   on sera à court de crane à apartir de : "+str(crisis_time))
+	#if 
+	
+	
+		
+		
 
 
 class Solution : 
@@ -32,18 +57,18 @@ class Solution :
 		return 0
 
 def seek_and_give_birth(ls_solution) : 
-	couple = find_besties(ls_solution)
+	couple = fin_besties(ls_solution)
 	child  = compute_next_indiv(couple[0], couple[1])
       
 
 def compute_next_indiv(sol_parent_1,sol_parent_2) : 
 	if (choose(MUTATION_CROSSOVER)) : 
-		child = mutation(sol_parent_1, sol_parent_2)
+		child = crossover(sol_parent_1, sol_parent_2)
 	else : 
 		if (choose(PARENT_CHOICE)) : 
-			child = crossover(sol_parent_1)
+			child = mutation(sol_parent_1)
 		else : 
-			child = crossover(sol_parent_2)
+			child = mutation(sol_parent_2)
 	return child
 
 	
@@ -56,4 +81,4 @@ def generate() :
 
 
 if __name__ == "__main__" : 
-	generate()
+	mutation(generate())

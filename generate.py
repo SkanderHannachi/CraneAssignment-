@@ -9,10 +9,11 @@ quay_nb = lambda x : "RORO" if x in [2,3,4,5] else "PC"
 modulo_quay = lambda x : 1 if x > 7 else x
 
 quays  = [Quay(quay_nb(x),x) for x in range(1,7)]
-cranes = [Crane(x) for x in range(1,7)]
+cranes = [Crane(x) for x in range(7)]
 cranes_queued = []
 nb_crane = lambda : 2 if (rdm.random() > 0.7) else 1
 verif = lambda  boat, quay : (boat.type_boat == quay.type_quay)
+crisis_time = START
 
 def sepererator() :
 	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -42,7 +43,7 @@ def merge_quay_crane_assignement() :
 		time = (B.arrival_time, B.ending_time)
 		print(str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib))
 		sepererator()
-		list_boat.append(list_boat)
+		list_boat.append(B)
 		list_time.append((B.starting_time, B.ending_time))
 		list_quays.append(Q)
 	return list_boat, list_time, list_quays
@@ -83,7 +84,12 @@ def assign_quay(boat, service_duration) :
 def assign_crane(boat, service_duration): 
 	global cranes 
 	global cranes_queued
+	global crisis_time
 	service_time = boat.arrival_time
+	if len(cranes) == 1: 
+		crisis_time = boat.arrival_time
+		print('############################################################################')
+		print(crisis_time)
 	if len(cranes) == 0 : 
 		distance = [] 
 		for crane in cranes_queued : 
@@ -98,7 +104,10 @@ def assign_crane(boat, service_duration):
 		c.time_freed =boat.arrival_time + service_duration 
 		c.queue = True
 		cranes_queued.append(c)
+		print(len(cranes))
 		return c
+	
+		
 
 
 

@@ -8,6 +8,7 @@ MONTH = '01'
 YEAR  = '2017'
 PATH = "bateaux.csv"
 NB_CRANES = 7
+START = datetime.datetime.strptime( YEAR+'-'+MONTH+'-'+DAY+' '+'00:00', '%Y-%m-%d %H:%M')
 
 f = lambda hours : "00" if hours=="24" else hours
 
@@ -24,6 +25,7 @@ class Crane :
 	def __init__(self, lib) : 
 		self.time_freed  =  datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M')
 		self.delta_freed = datetime.timedelta(seconds = 0 )
+		#self.starting_time= START
 		self.lib = lib
 	def __gt__(self, autre): 
 		return self.time_freed > autre.time_freed 
@@ -42,15 +44,15 @@ class Boat :
 		self.type_boat = type_boat 
 		self.arrival_time  = self.convert_time(arrival) 
 		self.departure     = self.convert_time(departure)
-		self.starting_time = datetime.datetime.strptime( YEAR+'-'+MONTH+'-'+DAY+' '+'00:00', '%Y-%m-%d %H:%M')
-		self.ending_time   = datetime.datetime.strptime( YEAR+'-'+MONTH+'-'+DAY+' '+'00:00', '%Y-%m-%d %H:%M')
+		self.starting_time = START
+		self.ending_time   = START
 		self.capa_cont     = int(capa_cont)
 		self.capa_remor    = int(capa_remor) if capa_remor != '-' else 0
 		self.is_departure  = True if (departure[0]=="D") else False     #nous informe si le bateau possede un fenetrage ou pas
         
 	def convert_time(self, ch) : 
 		if ch == "-" : 
-			return datetime.datetime.strptime( YEAR+'-'+MONTH+'-'+DAY+' '+'00:00', '%Y-%m-%d %H:%M')
+			return START
 		elif ch[0]=="D" : 
 			return datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+str(int(DAY)+1)+' '+f(ch[2:4])+':'+ch[5:7], '%Y-%m-%d %H:%M')
 		else : 
