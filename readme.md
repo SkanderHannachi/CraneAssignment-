@@ -1,4 +1,4 @@
-""" 
+
 
 	Descriptif :
     ------------
@@ -28,4 +28,4 @@
 		Pour les grues, on ne peut pas raisonner sur la capacité des bateaux sinon ça entrainerait des convergences locales très rapides. On initialise randomli.
 		        
     
-   """
+   
