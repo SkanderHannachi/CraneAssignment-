@@ -1,4 +1,3 @@
-"""Pour le plotting penser a faire un gantt dynamique qui change pour change pour chaque solution """
 
 import datetime
 import csv 
@@ -21,7 +20,6 @@ def read_csv(path) :
 	return ls
 
 class Crane :
-	"""La classe grue. Elle contient l'information sur le nombre de gruess affectees """
 	def __init__(self, lib) : 
 		self.time_freed  =  datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M')
 		self.delta_freed = datetime.timedelta(seconds = 0 )

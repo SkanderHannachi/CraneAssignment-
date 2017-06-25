@@ -1,9 +1,5 @@
-"""pour liberer les grues faire un trruc du genre :
-pour chercher quelle crane, on raisonne comme pour les quays : on calcule la distance la plus courte 
-"""
 import random as rdm 
 from load import * 
-#from core import Solution
 
 quay_nb = lambda x : "RORO" if x in [2,3,4,5] else "PC"
 modulo_quay = lambda x : 1 if x > 7 else x
@@ -71,7 +67,6 @@ def assign_quay(boat, service_duration) :
 		q.queue = True
 	else : 
 		q = rdm.choice(concerned)
-		#del quays[0] 
 		q.time_freed = max(q.time_freed, boat.arrival_time)
 		q.time_freed +=  service_duration
 		q.queue = True
@@ -88,8 +83,7 @@ def assign_crane(boat, service_duration):
 	service_time = boat.arrival_time
 	if len(cranes) == 1: 
 		crisis_time = boat.arrival_time
-		print('############################################################################')
-		print(crisis_time)
+		#print(crisis_time)
 	if len(cranes) == 0 : 
 		distance = [] 
 		for crane in cranes_queued : 
