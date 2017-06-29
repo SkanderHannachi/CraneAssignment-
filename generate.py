@@ -3,7 +3,10 @@ pour chercher quelle crane, on raisonne comme pour les quays : on calcule la dis
 """
 import random as rdm 
 from load import * 
-#from core import Solution
+try:
+    from xtermcolor import colorize
+except ImportError:
+    raise ImportError('install via sudo apt install python3-xtermcolor/vivid')
 
 quay_nb = lambda x : "RORO" if x in [2,3,4,5] else "PC"
 modulo_quay = lambda x : 1 if x > 7 else x
@@ -16,10 +19,14 @@ verif = lambda  boat, quay : (boat.type_boat == quay.type_quay)
 crisis_time = START
 
 def sepererator() :
-	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	try:
+		print(colorize("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", ansi=36))
+	except NameError:
+		print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 
 def merge_quay_crane_assignement() : 
+	global crisis_time
 	ls_boats = read_csv(PATH)
 	list_boat, list_time, list_quays = [], [], []
 	for boat in ls_boats : 
@@ -41,12 +48,15 @@ def merge_quay_crane_assignement() :
 		boat.ending_time = boat.departure if abs(boat.ending_time-boat.arrival_time) > abs(boat.departure-boat.arrival_time) else boat.ending_time 
 		B = boat
 		time = (B.arrival_time, B.ending_time)
-		print(str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib))
+		try : 
+			print(colorize(str(B.type_boat), ansi=30)+"  :: arrive à "+colorize(str(B.arrival_time), ansi = 2)+" servi à : "+colorize(str(B.starting_time), ansi = 3)+" fini à : "+colorize(str(B.ending_time), ansi=5)+" au quai N° : "+colorize(str(Q.lib), ansi=2))
+		except NameError : 
+			print(str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib))
 		sepererator()
 		list_boat.append(B)
 		list_time.append((B.starting_time, B.ending_time))
 		list_quays.append(Q)
-	return list_boat, list_time, list_quays
+	return list_boat, list_time, list_quays, crisis_time
 	
 
 
@@ -78,7 +88,6 @@ def assign_quay(boat, service_duration) :
 		ind = quays.index(q)
 		quays[ ind ] = q
 		
-		
 	return q
 
 def assign_crane(boat, service_duration): 
@@ -104,7 +113,6 @@ def assign_crane(boat, service_duration):
 		c.time_freed =boat.arrival_time + service_duration 
 		c.queue = True
 		cranes_queued.append(c)
-		print(len(cranes))
 		return c
 	
 		
