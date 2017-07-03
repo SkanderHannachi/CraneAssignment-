@@ -1,7 +1,7 @@
-""" 
+
 
 	Descriptif :
-    ------------
+        ------------
 
 	Resoudre le probleme d'ordonnancement avec un algo genetique : 
     
@@ -28,4 +28,4 @@
 	
 		        
     
-   """
+   

@@ -1,6 +1,3 @@
-"""                 	adam = Solution(list_boat, list_time, list_quays)
-"""
-
 import random as rdm
 from load import Boat
 from generate import merge_quay_crane_assignement, sepererator, crisis_time
@@ -10,8 +7,6 @@ MUTATION_CROSSOVER = 0.7   #70% chance for a mutation
 PARENT_CHOICE      = 0.5
 
 choose = lambda chance : rdm.random() < chance
-
-
 
 def mutation(adam) : 
 	"""cette fonction switch deux bateaux du même type. Il faut rajouter une condition pour que l'ecart au niveau du temps ne soit pas enorme."""
@@ -43,14 +38,24 @@ def mutation(adam) :
 			gene_one.starting_time = gene_quay_two.time_freed
 		else : 
 			gene_one.starting_time = gene_one.arrival_time
-		if gene_time_two > gene_quay_two.time_freed : 
+		if gene_two.arrival_time > gene_quay_two.time_freed : 
 			gene_two.starting_time = gene_quay_two.time_freed 
 		else : 
 			gene_two.starting_time = gene_two.arrival_time
-		
-		
-
-
+		if gene_one.starting_time > crisis_time : 
+			print("pas de probleme pour les grues")
+		else : 
+			print("pas de grue, il faut attendre")
+	print("finalement le premier PC va commencer à "+ str(gene_one.starting_time)+"  alors qu'il est arrivé à "+str(gene_one.arrival_time))
+	print(gene_one.starting_time)
+	print(gene_two.starting_time)
+	ls_boats_to_permute[ind_gene_boat_one] = gene_two
+	ls_boats_to_permute[ind_gene_boat_two] = gene_one
+	ls_quays_to_permute[ind_gene_boat_one] = gene_quay_two
+	ls_quays_to_permute[ind_gene_boat_two] = gene_quay_one
+	adam.list_boat  = ls_boats_to_permute
+	adam.list_quays = ls_quays_to_permute
+	return adam 
 
 class Solution : 
 	"""la classe solution permet de definir une solution au probleme (ie) une solution represntable sous forme de GANTT. Elle est caracterisee par un float Performance qui nous informe sur le rendement """
@@ -71,7 +76,6 @@ def seek_and_give_birth(ls_solution) :
 	couple = fin_besties(ls_solution)
 	child  = compute_next_indiv(couple[0], couple[1])
       
-
 def compute_next_indiv(sol_parent_1,sol_parent_2) : 
 	if (choose(MUTATION_CROSSOVER)) : 
 		child = crossover(sol_parent_1, sol_parent_2)
@@ -82,14 +86,18 @@ def compute_next_indiv(sol_parent_1,sol_parent_2) :
 			child = mutation(sol_parent_2)
 	return child
 
-	
-
 def generate() : 
 	list_boat, list_time, list_quays, crisis = merge_quay_crane_assignement()
 	adam = Solution(list_boat, list_time, list_quays, crisis)
 	return adam
 
-
-
 if __name__ == "__main__" : 
-	mutation(generate())
+	sol = generate()
+	mutated = mutation(sol)
+	print(mutated.list_boat == sol.list_boat)
+	#for elem in mutated.list_boat
+	print(mutated.list_boat)
+	sepererator()
+	print(sol.list_boat)
+	
+	
