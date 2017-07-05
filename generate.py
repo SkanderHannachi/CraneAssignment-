@@ -22,22 +22,25 @@ def sepererator() :
 		print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 
+def compute_time(boat) :
+	if boat.type_boat == "PC" : 
+			nb_crane_assgn = 1
+			service_time = boat.capa_cont /nb_crane_assgn
+			service_time = datetime.timedelta(0,60 * service_time)
+	if boat.type_boat == "RORO" : 
+		manu = boat.capa_remor
+		min_total = ( 40 / 60 ) *  boat.capa_cont 
+		delta_assignement = max(datetime.timedelta(0,60 * min_total), datetime.timedelta(0,60 *  manu  ))
+		service_time = datetime.timedelta(0,60 *  manu  )
+	return service_time
+
+
 def merge_quay_crane_assignement() : 
 	global crisis_time
 	ls_boats = read_csv(PATH)
 	list_boat, list_time, list_quays = [], [], []
 	for boat in ls_boats : 
-		if boat.type_boat == "PC" : 
-			nb_crane_assgn = 1
-			service_time = boat.capa_cont /nb_crane_assgn
-			service_time = datetime.timedelta(0,60 * service_time)
-			
-		if boat.type_boat == "RORO" : 
-			manu = boat.capa_remor
-			min_total = ( 40 / 60 ) *  boat.capa_cont 
-			delta_assignement = max(datetime.timedelta(0,60 * min_total), datetime.timedelta(0,60 *  manu  ))
-			service_time = datetime.timedelta(0,60 *  manu  )
-			
+		service_time = compute_time(boat)
 		Q = assign_quay(boat, service_time)
 		C = assign_crane(boat, service_time)
 		boat.starting_time = max(Q.time_freed - service_time, C.time_freed - service_time)
@@ -74,11 +77,13 @@ def assign_quay(boat, service_duration) :
 		q = min(distance, key=lambda x: x[0]) 
 		q = q[1]
 		q.time_freed = max(q.time_freed, boat.arrival_time)
+		q.starting_time = q.time_freed
 		q.time_freed += service_duration
 		q.queue = True
 	else : 
 		q = rdm.choice(concerned)
 		q.time_freed = max(q.time_freed, boat.arrival_time)
+		q.starting_time = q.time_freed
 		q.time_freed +=  service_duration
 		q.queue = True
 		ind = quays.index(q)

@@ -33,6 +33,7 @@ class Quay :
 	def __init__(self, type_quay, lib): 
 		self.type_quay      = type_quay 
 		self.time_freed = datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M')         # de type time
+		self.starting_time = START
 		self.lib = lib
 		self.queue= False
 	def __gt__(self, autre): 
