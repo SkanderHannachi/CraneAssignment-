@@ -4,7 +4,9 @@
 
 import random as rdm
 from load import Boat
+import datetime
 from generate import merge_quay_crane_assignement, sepererator, crisis_time, compute_time
+
 
 NB_POPULATION = 10
 MUTATION_CROSSOVER = 0.7   #70% chance for a mutation
@@ -44,7 +46,7 @@ def crossover(PA, PB) :
 	PB.list_boat[ind_B] = update(gene_two, gene_quay_one)
 	PA.list_quays[ind_A] = gene_quay_one
 	PB.list_quays[ind_A] = gene_quay_two
-	return PB
+	return PA
 
 	
 	
@@ -98,16 +100,17 @@ class Solution :
 	"""la classe solution permet de definir une solution au probleme (ie) une solution represntable sous forme de GANTT. Elle est caracterisee par un float Performance qui nous informe sur le rendement """
 	def __init__(self, list_boat, list_time, list_quays, crisis) :
 		"""On la remplir avec un vecteur de bateaux et un autre vecteur sur les heures de departs et darrivee. Finalement un troisieme vecteur sur le nombre de grues. """
-		self.performance = self.compute()
-		self.list_boat   = list_boat                   #une liste de chaque quai accueillant chaque bateau, les quais sont numérotés
-		self.list_time   = list_time                   #une liste d'une liste des temps reservés dans chaque quai pour chaque bateau
+		self.list_boat   = list_boat                   
+		self.list_time   = list_time                   
 		self.list_quays  = list_quays 
-		self.indiv_list  = zip(self.list_boat, self.list_time, self.list_quays) #un individu : ie la variable qui regroupe tout
 		self.lenght = len(list_boat)
 		self.crisis_time = crisis
-        
+		self.performance = self.compute()
 	def compute(self) : 
-		return 0
+		S = datetime.timedelta(seconds = 0 )
+		for elem in self.list_boat : 
+			S += abs(elem.ending_time - elem.arrival_time)
+		return S
 
 def seek_and_give_birth(ls_solution) : 
 	couple = find_besties(ls_solution)
@@ -130,13 +133,13 @@ def generate() :
 
 if __name__ == "__main__" : 
 	sol = generate()
-	mutated = mutation(sol)
+	#mutated = mutation(sol)
 	#print(mutated.list_boat == sol.list_boat)
 	#for elem in mutated.list_boat
 	#print(mutated.list_boat)
 	sepererator()
-	for i in range(50) : 
+	for i in range(50000) : 
 		sol = crossover(sol, sol)
-		print(sol)
+		print(sol.performance)
 	
 	
