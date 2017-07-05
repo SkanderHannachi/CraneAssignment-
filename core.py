@@ -22,12 +22,12 @@ def pick_up(PA, PB) :
 	return x,y 
 
 def update(new_boat, quay) : 
-	if new_boat.arrival_time > quay.starting_time : 
-		new_boat.starting_time = quay.starting_time 
-	else : 
-		new_boat.starting_time = new_boat.arrival_time
+	new_boat.starting_time = max(new_boat.arrival_time, quay.starting_time)
+	new_boat.ending_time   = new_boat.starting_time 
+	return new_boat
 
 def crossover(PA, PB) : 
+	"""prends deux solutions en entrée. """
 	gene_one, gene_two = pick_up(PA, PB) 
 	ind_A = PA.list_boat.index(gene_one)
 	ind_B = PB.list_boat.index(gene_two)
@@ -35,7 +35,19 @@ def crossover(PA, PB) :
 	gene_quay_two = PA.list_quays[ind_B]
 	service_time_A = compute_time(gene_one)
 	service_time_B = compute_time(gene_two)
+	# dans ce qui suit, les quays ne "bougent" pas contrairement aux boats
+	gene_quay_one.starting_time = max(gene_two.arrival_time, gene_quay_one.starting_time)
+	gene_quay_two.starting_time = max(gene_one.arrival_time, gene_quay_two.starting_time)
+	gene_quay_one.time_freed += service_time_B
+	gene_quay_two.time_freed += service_time_A
+	PA.list_boat[ind_A] = update(gene_one, gene_quay_two)
+	PB.list_boat[ind_B] = update(gene_two, gene_quay_one)
+	PA.list_quays[ind_A] = gene_quay_one
+	PB.list_quays[ind_A] = gene_quay_two
+	return PB
 
+	
+	
 def mutation(adam) : 
 	global crisis_time
 	ls_boats_to_permute = adam.list_boat
@@ -123,7 +135,7 @@ if __name__ == "__main__" :
 	#for elem in mutated.list_boat
 	#print(mutated.list_boat)
 	sepererator()
-	crossover(sol, sol)
-	#print(sol.list_boat)
+	child = crossover(sol, sol)
+	print(sol == child)
 	
 	

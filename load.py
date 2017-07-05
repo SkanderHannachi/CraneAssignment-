@@ -1,4 +1,3 @@
-
 import datetime
 import csv 
 
@@ -27,7 +26,6 @@ class Crane :
 		self.lib = lib
 	def __gt__(self, autre): 
 		return self.time_freed > autre.time_freed 
-
 
 class Quay : 
 	def __init__(self, type_quay, lib): 
