@@ -110,7 +110,7 @@ class Solution :
 		return 0
 
 def seek_and_give_birth(ls_solution) : 
-	couple = fin_besties(ls_solution)
+	couple = find_besties(ls_solution)
 	child  = compute_next_indiv(couple[0], couple[1])
       
 def compute_next_indiv(sol_parent_1,sol_parent_2) : 
@@ -135,7 +135,8 @@ if __name__ == "__main__" :
 	#for elem in mutated.list_boat
 	#print(mutated.list_boat)
 	sepererator()
-	child = crossover(sol, sol)
-	print(sol == child)
+	for i in range(50) : 
+		sol = crossover(sol, sol)
+		print(sol)
 	
 	
