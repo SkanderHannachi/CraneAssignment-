@@ -21,7 +21,6 @@ def sepererator() :
 	except NameError:
 		print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-
 def compute_time(boat) :
 	if boat.type_boat == "PC" : 
 			nb_crane_assgn = 1
@@ -34,7 +33,6 @@ def compute_time(boat) :
 		service_time = datetime.timedelta(0,60 *  manu  )
 	return service_time
 
-
 def merge_quay_crane_assignement() : 
 	global crisis_time
 	ls_boats = read_csv(PATH)
@@ -45,25 +43,28 @@ def merge_quay_crane_assignement() :
 		C = assign_crane(boat, service_time)
 		boat.starting_time = max(Q.time_freed - service_time, C.time_freed - service_time)
 		boat.ending_time = max(Q.time_freed, C.time_freed)
+		print("la grue sera dispo à :: " + str(C.time_freed - service_time))
+		print("***") 
+		print("le quai sera dispo à :: " + str(Q.time_freed - service_time))
+		print("---")
+		print(boat.starting_time)
 		boat.ending_time = boat.departure if abs(boat.ending_time-boat.arrival_time) > abs(boat.departure-boat.arrival_time) else boat.ending_time 
 		B = boat
 		time = (B.arrival_time, B.ending_time)
 		try : 
 			print(colorize(str(B.type_boat), ansi=30)+"  :: arrive à "+colorize(str(B.arrival_time), ansi = 2)+" servi à : "+colorize(str(B.starting_time), ansi = 3)+" fini à : "+colorize(str(B.ending_time), ansi=5)+" au quai N° : "+colorize(str(Q.lib), ansi=2))
 		except NameError : 
-			print(str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib))
+			"""on utilise ch pour ecrire dans le fichier log """
+			print(ch = str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib))
 		sepererator()
 		list_boat.append(B)
 		list_time.append((B.starting_time, B.ending_time))
 		list_quays.append(Q)
 	return list_boat, list_time, list_quays, crisis_time
-	
-
 
 def assign_quay(boat, service_duration) : 
 	global quays 
 	global cranes
-
 	#creation de la liste des quays concernes 
 	concerned = [quay for quay in quays if verif(boat, quay)]
 	ls_quays_free = [quay for quay in concerned if quay.queue == False] 
@@ -77,7 +78,7 @@ def assign_quay(boat, service_duration) :
 		q = min(distance, key=lambda x: x[0]) 
 		q = q[1]
 		q.time_freed = max(q.time_freed, boat.arrival_time)
-		q.starting_time = q.time_freed
+		q.starting_time = q.time_freed 
 		q.time_freed += service_duration
 		q.queue = True
 	else : 
@@ -92,13 +93,18 @@ def assign_quay(boat, service_duration) :
 	return q
 
 def assign_crane(boat, service_duration): 
+	"""a l'air de tres mal fonctionner !  """
 	global cranes 
 	global cranes_queued
 	global crisis_time
-	service_time = boat.arrival_time
+	#service_time = boat.arrival_time if boat.arrival_time > c[1].time_freed else c[1].time_freed
+	#if len(cranes) > 0 : 
+		#print(cranes)
+	#else : 
+		#print(cranes_queued)
 	if len(cranes) == 1: 
 		crisis_time = boat.arrival_time
-		#print(crisis_time)
+		print(crisis_time)
 	if len(cranes) == 0 : 
 		distance = [] 
 		for crane in cranes_queued : 
@@ -107,6 +113,7 @@ def assign_crane(boat, service_duration):
 		c[1].time_freed =boat.arrival_time + service_duration
 		cranes_queued[cranes_queued.index(c[1])] = c[1]
 		return c[1]
+		#print ("la crane sera dispo à : " + str(c[1]))
 	else : 
 		c = cranes[0]
 		del cranes[0]
