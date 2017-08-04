@@ -36,7 +36,7 @@ def compute_time(boat) :
 def merge_quay_crane_assignement() : 
 	global crisis_time
 	ls_boats = read_csv(PATH)
-	list_boat, list_time, list_quays = [], [], []
+	list_boat, list_time, list_quays, list_delays = [], [], [], []
 	for boat in ls_boats : 
 		service_time = compute_time(boat)
 		Q = assign_quay(boat, service_time)
@@ -47,20 +47,20 @@ def merge_quay_crane_assignement() :
 		print("***") 
 		print("le quai sera dispo à :: " + str(Q.time_freed - service_time))
 		print("---")
-		print(boat.starting_time)
 		boat.ending_time = boat.departure if abs(boat.ending_time-boat.arrival_time) > abs(boat.departure-boat.arrival_time) else boat.ending_time 
 		B = boat
 		time = (B.arrival_time, B.ending_time)
 		try : 
-			print(colorize(str(B.type_boat), ansi=30)+"  :: arrive à "+colorize(str(B.arrival_time), ansi = 2)+" servi à : "+colorize(str(B.starting_time), ansi = 3)+" fini à : "+colorize(str(B.ending_time), ansi=5)+" au quai N° : "+colorize(str(Q.lib), ansi=2))
+			print(colorize(str(B.type_boat), ansi=30)+"  :: arrive à "+colorize(str(B.arrival_time), ansi = 2)+" servi à : "+colorize(str(B.starting_time), ansi = 3)+" fini à : "+colorize(str(B.ending_time), ansi=5)+" au quai N° : "+colorize(str(Q.lib), ansi=2) + " avec un delay de :" + colorize(str(abs(B.arrival_time - B.starting_time)), ansi=95))
 		except NameError : 
 			"""on utilise ch pour ecrire dans le fichier log """
-			print(ch = str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib))
+			print(ch = str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib) + " avec un delay de :" + str(abs(B.arrival_time - B.starting_time)))
 		sepererator()
+		list_delays.append(abs(B.arrival_time - B.starting_time))
 		list_boat.append(B)
 		list_time.append((B.starting_time, B.ending_time))
 		list_quays.append(Q)
-	return list_boat, list_time, list_quays, crisis_time
+	return list_boat, list_time, list_quays, list_delays, crisis_time
 
 def assign_quay(boat, service_duration) : 
 	global quays 

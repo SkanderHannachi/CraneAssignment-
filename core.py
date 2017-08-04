@@ -49,18 +49,19 @@ def crossover(PA, PB) :
 
 class Solution : 
 	"""la classe solution permet de definir une solution au probleme (ie) une solution represntable sous forme de GANTT. Elle est caracterisee par un float Performance qui nous informe sur le rendement """
-	def __init__(self, list_boat, list_time, list_quays, crisis) :
+	def __init__(self, list_boat, list_time, list_quays, list_delays, crisis) :
 		"""On la remplir avec un vecteur de bateaux et un autre vecteur sur les heures de departs et darrivee. Finalement un troisieme vecteur sur le nombre de grues. """
 		self.list_boat   = list_boat                   
 		self.list_time   = list_time                   
 		self.list_quays  = list_quays 
+		self.list_delays = list_delays    # on aura besoin de calculer le tempsd'attente entre l'arrivee et le depart pour computer les perfs 
 		self.lenght = len(list_boat)
 		self.crisis_time = crisis
 		self.performance = self.compute()
 	def compute(self) : 
 		S = datetime.timedelta(seconds = 0 )
-		for elem in self.list_boat : 
-			S += abs(elem.ending_time - elem.arrival_time)
+		for elem in self.list_delays : 
+			S += elem
 		return S
 
 def seek_and_give_birth(ls_solution) : 
@@ -78,8 +79,8 @@ def compute_next_indiv(sol_parent_1,sol_parent_2) :
 	return child
 
 def generate() : 
-	list_boat, list_time, list_quays, crisis = merge_quay_crane_assignement()
-	adam = Solution(list_boat, list_time, list_quays, crisis)
+	list_boat, list_time, list_quays, list_delays, crisis = merge_quay_crane_assignement()
+	adam = Solution(list_boat, list_time, list_quays, list_delays, crisis)
 	return adam
 
 if __name__ == "__main__" : 
