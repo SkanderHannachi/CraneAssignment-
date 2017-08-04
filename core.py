@@ -135,8 +135,8 @@ if __name__ == "__main__" :
 	#for elem in mutated.list_boat
 	#print(mutated.list_boat)
 	sepererator()
-	for i in range(50000) : 
-		sol = crossover(sol, sol)
-		print(sol.performance)
+	#for i in range(50000) : 
+		#sol = crossover(sol, sol)
+		#print(sol.performance)
 	
 	
