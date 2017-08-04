@@ -1,5 +1,8 @@
 """PA et PB sont deux parents (deux solutions). La mutaion est le cas particulier 
 	mutation(adam) == crossover(adam, adam) la mutation est la forme quadratique associée à la la forme bilinéaire symétrique de la fnc crossover. 
+
+Une idee : raisonner sur le delay time pour améliorer les perfo à chaque epoch, ie : chercher ceux succebtibles de se permuter et possédant un delay time > 0 
+
 """
 
 import random as rdm
