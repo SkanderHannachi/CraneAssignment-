@@ -38,15 +38,14 @@ def merge_quay_crane_assignement() :
 	ls_boats = read_csv(PATH)
 	list_boat, list_time, list_quays, list_delays = [], [], [], []
 	for boat in ls_boats : 
+		#Q = Quay()
 		service_time = compute_time(boat)
 		Q = assign_quay(boat, service_time)
+		#print("quai se libère a : " + str(Q.time_freed))
+		#print(Q.time_freed)
 		C = assign_crane(boat, service_time)
 		boat.starting_time = max(Q.time_freed - service_time, C.time_freed - service_time)
 		boat.ending_time = max(Q.time_freed, C.time_freed)
-		print("la grue sera dispo à :: " + str(C.time_freed - service_time))
-		print("***") 
-		print("le quai sera dispo à :: " + str(Q.time_freed - service_time))
-		print("---")
 		boat.ending_time = boat.departure if abs(boat.ending_time-boat.arrival_time) > abs(boat.departure-boat.arrival_time) else boat.ending_time 
 		B = boat
 		time = (B.arrival_time, B.ending_time)
@@ -56,10 +55,18 @@ def merge_quay_crane_assignement() :
 			"""on utilise ch pour ecrire dans le fichier log """
 			print(ch = str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib) + " avec un delay de :" + str(abs(B.arrival_time - B.starting_time)))
 		sepererator()
+		Q.time_freed = B.ending_time
+		#Q.starting_time = B.ending_time
+		V = VesselTime(B.starting_time, B.ending_time, Q.lib, Q)
 		list_delays.append(abs(B.arrival_time - B.starting_time))
 		list_boat.append(B)
-		list_time.append((B.starting_time, B.ending_time))
+		list_time.append(V)
 		list_quays.append(Q)
+		#print("quai se libère a : " + str(Q.time_freed))
+	#for quay in list_quays : 
+		#print(str(quay.starting_time)+"  fini aa  ::  "+str(quay.time_freed)+" quai n° : " +str(quay.lib) )
+	for times in list_time : 
+		print(str(times.starting_time) + "  fini a "+str(times.time_freed)+"  au quai n : "+str(times.lib) )
 	return list_boat, list_time, list_quays, list_delays, crisis_time
 
 def assign_quay(boat, service_duration) : 
@@ -76,20 +83,22 @@ def assign_quay(boat, service_duration) :
 		for busy in ls_quays_busy : 
 			distance.append((abs(boat.arrival_time - busy.time_freed), busy ))
 		q = min(distance, key=lambda x: x[0]) 
-		q = q[1]
-		q.time_freed = max(q.time_freed, boat.arrival_time)
-		q.starting_time = q.time_freed 
-		q.time_freed += service_duration
+		q = q[1]  #quay busy
+		indc = ls_quays_busy.index(q)
+		ind = quays.index(q)
+		q.starting_time = max(q.time_freed, boat.arrival_time) 
+		q.time_freed = q.starting_time + service_duration
 		q.queue = True
+		#ls_quays_busy[indc] = q 
+		quays[ ind ] = q
 	else : 
-		q = rdm.choice(concerned)
-		q.time_freed = max(q.time_freed, boat.arrival_time)
-		q.starting_time = q.time_freed
-		q.time_freed +=  service_duration
+		q = rdm.choice(ls_quays_free)
+		q.starting_time = max(q.time_freed, boat.arrival_time)
+		q.time_freed = q.starting_time + service_duration
 		q.queue = True
 		ind = quays.index(q)
 		quays[ ind ] = q
-		
+	#print("quai se libère a : " + str(q.time_freed))
 	return q
 
 def assign_crane(boat, service_duration): 
@@ -121,10 +130,8 @@ def assign_crane(boat, service_duration):
 		c.queue = True
 		cranes_queued.append(c)
 		return c
-	
-		
 
-
-
+    
 if __name__ == "__main__" : 
 	generate()
+	affich()

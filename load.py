@@ -18,6 +18,12 @@ def read_csv(path) :
 			ls.append(Boat(rows[0],rows[1],rows[2],rows[3],rows[4] ))
 	return ls
 
+class VesselTime: 
+	def __init__(self, starting_time, time_freed, lib, quay=None):
+		self.starting_time = starting_time 
+		self.time_freed    = time_freed
+		self.lib           = lib
+
 class Crane :
 	def __init__(self, lib) : 
 		self.time_freed  =  datetime.datetime.strptime(YEAR+'-'+MONTH+'-'+DAY+' '+'00:00','%Y-%m-%d %H:%M')
@@ -46,7 +52,6 @@ class Boat :
 		self.capa_cont     = int(capa_cont)
 		self.capa_remor    = int(capa_remor) if capa_remor != '-' else 0
 		self.is_departure  = True if (departure[0]=="D") else False     #nous informe si le bateau possede un fenetrage ou pas
-        
 	def convert_time(self, ch) : 
 		if ch == "-" : 
 			return START

@@ -15,41 +15,107 @@ NB_POPULATION = 10
 MUTATION_CROSSOVER = 0.7   #70% chance for a mutation
 PARENT_CHOICE      = 0.5
 
-choose = lambda chance : rdm.random() < chance
+choose = lambda chance : rdm.random() < chance 
 
-def pick_up(PA, PB) : 
+def suppr(ls, l) : 
+    for elem in l : 
+        ls.remove(elem) 
+    return ls
+
+def pick_up(soluion) : 
 	x = rdm.choice(PA.list_boat)
 	y = rdm.choice(PB.list_boat)
-	while (x == y) or (x.type_boat != y.type_boat) : 
+	while (x == y) : 
 		y = rdm.choice(PB.list_boat)
 	return x,y 
+    
 
 def update(new_boat, quay) : 
 	new_boat.starting_time = max(new_boat.arrival_time, quay.starting_time)
 	new_boat.ending_time   = new_boat.starting_time 
 	return new_boat
 
-def crossover(PA, PB) : 
-	"""prends deux solutions en entrée. """
-	gene_one, gene_two = pick_up(PA, PB) 
-	ind_A = PA.list_boat.index(gene_one)
-	ind_B = PB.list_boat.index(gene_two)
-	gene_quay_one = PA.list_quays[ind_A]
-	gene_quay_two = PA.list_quays[ind_B]
-	service_time_A = compute_time(gene_one)
-	service_time_B = compute_time(gene_two)
-	# dans ce qui suit, les quays ne "bougent" pas contrairement aux boats
-	gene_quay_one.starting_time = max(gene_two.arrival_time, gene_quay_one.starting_time)
-	gene_quay_two.starting_time = max(gene_one.arrival_time, gene_quay_two.starting_time)
-	gene_quay_one.time_freed += service_time_B
-	gene_quay_two.time_freed += service_time_A
-	PA.list_boat[ind_A] = update(gene_one, gene_quay_two)
-	PB.list_boat[ind_B] = update(gene_two, gene_quay_one)
-	PA.list_quays[ind_A] = gene_quay_one
-	PB.list_quays[ind_A] = gene_quay_two
-	return PA if max(PA.performance, PB.performance) == PA.performance else PB
+def extract(PA, ind) : 
+    return [elem for elem in PA.list_quays if elem == ind]
+
+#def insert_and_update(solution, ls_quay_modified, boat_to_inster): 
+    #if boat_to_inster.arrival_time < 
+
+def find_new_starting_time(ls_quays, ls_time, boat, service_time):
+	bl, state, k = True, False, 1
+	while ((k <= len(ls_time)) or (bl==True) ): 
+		dis = ls_time[k].time_freed - ls_time[k-1].starting_time
+		if dis < service_time : 
+			print("bing!")
+			bl = False
+			state = True
+		else : 
+			state = False
+			k += 1
+	if ( boat.arrival_time + service_time < ls_time[0].starting_time ) and (state == False): 
+		boat.starting_time = boat.arrival_time 
+		boat.ending_time  = boat.starting_time + service_time 
+		ls_quays[0].starting_time = boat.starting_time
+		ls_quays[0].time_freed = boat.starting_time + service_time
+		ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
+	elif (state == False) : 
+		boat.starting_time = ls_time[-1].time_freed 
+		boat.ending_time  = boat.starting_time + service_time 
+		ls_quays[-1].starting_time = boat.starting_time
+		ls_quays[-1].time_freed = boat.starting_time + service_time
+		ls_time[-1] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[-1].lib, ls_quays[-1]) #throw ls_time
+	elif (state == True) : 
+		boat.starting_time = boat.arrival_time 
+		boat.ending_time  = boat.starting_time + service_time 
+		ls_quays[0].starting_time = boat.starting_time
+		ls_quays[0].time_freed = boat.starting_time + service_time
+		ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
+		
+		
+		
+	
+	
 	
 
+
+def mutation(sol) : 
+	"""Prends une solution et pick deux quays aléatoirement """ 
+	state = True
+	while(state) : 
+		if choose(PARENT_CHOICE) : 
+			parents = rdm.sample([2,3,4,5], 2)
+		else : 
+			parents = rdm.sample([1, 6], 2)  #bof
+		gene_one_ind, gene_two_ind = parents[0], parents[1]
+		print(gene_one_ind)
+		print(gene_two_ind)
+		print("######")
+		for quay in sol.list_quays : 
+			print(quay.time_freed)
+		quay_one_ls =[elem for elem in sol.list_quays if elem.lib == gene_one_ind]
+		quay_two_ls = [elem for elem in sol.list_quays if elem.lib == gene_two_ind]
+		times_one_ls = [elem for elem in sol.list_time if elem.lib == gene_one_ind]
+		times_two_ls = [elem for elem in sol.list_time if elem.lib == gene_two_ind]
+		print(quay_one_ls) #c est ces lists quon va manipuler
+		print(quay_two_ls)
+		try : 
+			boat_one_q = rdm.choice(quay_one_ls)
+			boat_two_q = rdm.choice(quay_two_ls)
+			state = False
+		except IndexError : 
+			state = True
+	boat_one = sol.list_boat[sol.list_quays.index(boat_one_q)]
+	boat_two = sol.list_boat[sol.list_quays.index(boat_two_q)]
+	print(" Boat_1 :  "  +str(boat_one.arrival_time))
+	print(" Boat_2 :  "  +str(boat_two.arrival_time))
+	for elem in [quay_one_ls, quay_two_ls] : 
+		l = suppr(sol.list_quays, elem)
+	for elem in times_one_ls : 
+		print("de "+str(elem.starting_time)+" a "+str(elem.time_freed))
+	times_one_ls_modified = find_new_starting_time(times_one_ls, boat_two)
+	times_two_ls_modified = find_new_starting_time(times_two_ls, boat_one)
+    
+    
 class Solution : 
 	"""la classe solution permet de definir une solution au probleme (ie) une solution represntable sous forme de GANTT. Elle est caracterisee par un float Performance qui nous informe sur le rendement """
 	def __init__(self, list_boat, list_time, list_quays, list_delays, crisis) :
@@ -64,7 +130,7 @@ class Solution :
 	def compute(self) : 
 		S = datetime.timedelta(seconds = 0 )
 		for elem in self.list_delays : 
-			S += elem
+			 S += elem 
 		return S
 
 def seek_and_give_birth(ls_solution) : 
@@ -88,13 +154,13 @@ def generate() :
 
 if __name__ == "__main__" : 
 	sol = generate()
+	mutation(sol)
 	#mutated = mutation(sol)
 	#print(mutated.list_boat == sol.list_boat)
-	#for elem in mutated.list_boat
 	#print(mutated.list_boat)
-	sepererator()
-	#for i in range(50000) : 
-		#sol = crossover(sol, sol)
+	#sepererator()
+	##for i in range(50000) : 
+    #crossover(sol, sol)
 		#print(sol.performance)
 	
 	
