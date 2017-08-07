@@ -21,17 +21,17 @@ def sepererator() :
 	except NameError:
 		print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-def compute_time(boat) :
-	if boat.type_boat == "PC" : 
-			nb_crane_assgn = 1
-			service_time = boat.capa_cont /nb_crane_assgn
-			service_time = datetime.timedelta(0,60 * service_time)
-	if boat.type_boat == "RORO" : 
-		manu = boat.capa_remor
-		min_total = ( 40 / 60 ) *  boat.capa_cont 
-		delta_assignement = max(datetime.timedelta(0,60 * min_total), datetime.timedelta(0,60 *  manu  ))
-		service_time = datetime.timedelta(0,60 *  manu  )
-	return service_time
+#def compute_time(boat) :
+	#if boat.type_boat == "PC" : 
+			#nb_crane_assgn = 1
+			#service_time = boat.capa_cont /nb_crane_assgn
+			#service_time = datetime.timedelta(0,60 * service_time)
+	#if boat.type_boat == "RORO" : 
+		#manu = boat.capa_remor
+		#min_total = ( 40 / 60 ) *  boat.capa_cont 
+		#delta_assignement = max(datetime.timedelta(0,60 * min_total), datetime.timedelta(0,60 *  manu  ))
+		#service_time = datetime.timedelta(0,60 *  manu  )
+	#return service_time
 
 def merge_quay_crane_assignement() : 
 	global crisis_time
@@ -39,7 +39,7 @@ def merge_quay_crane_assignement() :
 	list_boat, list_time, list_quays, list_delays = [], [], [], []
 	for boat in ls_boats : 
 		#Q = Quay()
-		service_time = compute_time(boat)
+		service_time = boat.compute_time()
 		Q = assign_quay(boat, service_time)
 		#print("quai se libère a : " + str(Q.time_freed))
 		#print(Q.time_freed)
@@ -82,6 +82,7 @@ def assign_quay(boat, service_duration) :
 		#print(concerned[0].type_quay)
 		for busy in ls_quays_busy : 
 			distance.append((abs(boat.arrival_time - busy.time_freed), busy ))
+		#if service_duration + boat.arrival_time > q.ti
 		q = min(distance, key=lambda x: x[0]) 
 		q = q[1]  #quay busy
 		indc = ls_quays_busy.index(q)

@@ -6,9 +6,9 @@ Une idee : raisonner sur le delay time pour améliorer les perfo à chaque epoch
 """
 
 import random as rdm
-from load import Boat
+from load import Boat, VesselTime
 import datetime
-from generate import merge_quay_crane_assignement, sepererator, crisis_time, compute_time
+from generate import merge_quay_crane_assignement, sepererator, crisis_time
 
 
 NB_POPULATION = 10
@@ -28,7 +28,6 @@ def pick_up(soluion) :
 	while (x == y) : 
 		y = rdm.choice(PB.list_boat)
 	return x,y 
-    
 
 def update(new_boat, quay) : 
 	new_boat.starting_time = max(new_boat.arrival_time, quay.starting_time)
@@ -43,39 +42,45 @@ def extract(PA, ind) :
 
 def find_new_starting_time(ls_quays, ls_time, boat, service_time):
 	bl, state, k = True, False, 1
-	while ((k <= len(ls_time)) or (bl==True) ): 
-		dis = ls_time[k].time_freed - ls_time[k-1].starting_time
-		if dis < service_time : 
-			print("bing!")
-			bl = False
-			state = True
-		else : 
-			state = False
-			k += 1
-	if ( boat.arrival_time + service_time < ls_time[0].starting_time ) and (state == False): 
-		boat.starting_time = boat.arrival_time 
-		boat.ending_time  = boat.starting_time + service_time 
-		ls_quays[0].starting_time = boat.starting_time
-		ls_quays[0].time_freed = boat.starting_time + service_time
-		ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
-	elif (state == False) : 
-		boat.starting_time = ls_time[-1].time_freed 
-		boat.ending_time  = boat.starting_time + service_time 
-		ls_quays[-1].starting_time = boat.starting_time
-		ls_quays[-1].time_freed = boat.starting_time + service_time
-		ls_time[-1] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[-1].lib, ls_quays[-1]) #throw ls_time
-	elif (state == True) : 
-		boat.starting_time = boat.arrival_time 
-		boat.ending_time  = boat.starting_time + service_time 
-		ls_quays[0].starting_time = boat.starting_time
-		ls_quays[0].time_freed = boat.starting_time + service_time
-		ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
+	try : 	
+		while ((k < len(ls_time)) and ( (bl==False)) ): 
+			dis = ls_time[k].time_freed - ls_time[k-1].starting_time
+			if dis < service_time : 
+				print("Jocker!")
+				bl = False
+				state = True
+			else : 
+				state = False
+				k += 1
+		if ( boat.arrival_time + service_time < ls_time[0].starting_time ) and (state == False): 
+			boat.starting_time = boat.arrival_time 
+			boat.ending_time  = boat.starting_time + service_time 
+			ls_quays[0].starting_time = boat.starting_time
+			ls_quays[0].time_freed = boat.starting_time + service_time
+			ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
+		elif (state == False) : 
+			boat.starting_time = ls_time[-1].time_freed 
+			boat.ending_time  = boat.starting_time + service_time 
+			ls_quays[-1].starting_time = boat.starting_time
+			ls_quays[-1].time_freed = boat.starting_time + service_time
+			ls_time[-1] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[-1].lib, ls_quays[-1]) #throw ls_time
+		elif (state == True) : 
+			boat.starting_time = boat.arrival_time 
+			boat.ending_time  = boat.starting_time + service_time 
+			ls_quays[k-1].starting_time = boat.starting_time
+			ls_quays[0].time_freed = boat.starting_time + service_time
+			ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
+		for elem in ls_time : 
+			print("PERMUT   /  commence a : " +str(elem.starting_time)+"  et fini a : "+str(elem.time_freed) +" au quai : "+str(elem.lib))
+	except IndexError: 
+		print("un seul quay")
+	return ls_time, ls_quays, boat
 		
-		
-		
-	
-	
-	
+
+def delete_list_from_list(ls,ll): 
+	for x in ll : 
+		ls.remove(x)
+	return ls
 
 
 def mutation(sol) : 
@@ -90,8 +95,8 @@ def mutation(sol) :
 		print(gene_one_ind)
 		print(gene_two_ind)
 		print("######")
-		for quay in sol.list_quays : 
-			print(quay.time_freed)
+		#for quay in sol.list_quays : 
+			#print(quay.time_freed)
 		quay_one_ls =[elem for elem in sol.list_quays if elem.lib == gene_one_ind]
 		quay_two_ls = [elem for elem in sol.list_quays if elem.lib == gene_two_ind]
 		times_one_ls = [elem for elem in sol.list_time if elem.lib == gene_one_ind]
@@ -106,14 +111,20 @@ def mutation(sol) :
 			state = True
 	boat_one = sol.list_boat[sol.list_quays.index(boat_one_q)]
 	boat_two = sol.list_boat[sol.list_quays.index(boat_two_q)]
+	sol.list_quays = delete_list_from_list(sol.list_quays, quay_one_ls)
+	sol.list_time = delete_list_from_list(sol.list_time, times_one_ls)
+	sol.list_time = delete_list_from_list(sol.list_time, times_two_ls)
 	print(" Boat_1 :  "  +str(boat_one.arrival_time))
 	print(" Boat_2 :  "  +str(boat_two.arrival_time))
 	for elem in [quay_one_ls, quay_two_ls] : 
 		l = suppr(sol.list_quays, elem)
 	for elem in times_one_ls : 
 		print("de "+str(elem.starting_time)+" a "+str(elem.time_freed))
-	times_one_ls_modified = find_new_starting_time(times_one_ls, boat_two)
-	times_two_ls_modified = find_new_starting_time(times_two_ls, boat_one)
+	times_one_ls_modified, ls_quay_one_modified, boat_two_modified,  = find_new_starting_time(quay_one_ls, times_one_ls, boat_two, boat_two.compute_time())
+	times_two_ls_modified, ls_quay_two_modified, boat_one_modified  = find_new_starting_time(quay_two_ls, times_two_ls, boat_one, boat_one.compute_time())
+	
+	
+	
     
     
 class Solution : 
