@@ -160,6 +160,7 @@ def mutation(sol) :
 			state = True
 	ind_one = sol.list_quays.index(boat_one_q)
 	ind_two = sol.list_quays.index(boat_two_q)
+	quay_one_ls[ind_one].remove(ind_one)
 	boat_one = sol.list_boat[ind_one]
 	boat_two = sol.list_boat[ind_two]
 	sol.list_boat[ind_two], sol.list_boat[ind_one] = sol.list_boat[ind_one], sol.list_boat[ind_two]
