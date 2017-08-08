@@ -1,9 +1,6 @@
 import random as rdm 
 from load import * 
-try:
-    from xtermcolor import colorize
-except ImportError:
-    raise ImportError('install via sudo apt install python3-xtermcolor/vivid')
+
 
 quay_nb = lambda x : "RORO" if x in [2,3,4,5] else "PC"
 modulo_quay = lambda x : 1 if x > 7 else x
@@ -38,10 +35,6 @@ def merge_quay_crane_assignement() :
 		boat.ending_time = boat.departure if abs(boat.ending_time-boat.arrival_time) > abs(boat.departure-boat.arrival_time) else boat.ending_time 
 		B = boat
 		time = (B.arrival_time, B.ending_time)
-		#try : 
-			#print(colorize(str(B.type_boat), ansi=30)+"  :: arrive à "+colorize(str(B.arrival_time), ansi = 2)+" servi à : "+colorize(str(B.starting_time), ansi = 3)+" fini à : "+colorize(str(B.ending_time), ansi=5)+" au quai N° : "+colorize(str(Q.lib), ansi=2) + " avec un delay de :" + colorize(str(abs(B.arrival_time - B.starting_time)), ansi=95))
-		#except NameError : 
-			#print(ch = str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib) + " avec un delay de :" + str(abs(B.arrival_time - B.starting_time)))
 		sepererator()
 		Q.time_freed = B.ending_time
 		#Q.starting_time = B.ending_time

@@ -26,7 +26,8 @@ Une idee : raisonner sur le delay time pour améliorer les perfo à chaque epoch
 import random as rdm
 from load import Boat, VesselTime
 import datetime
-from generate import merge_quay_crane_assignement, sepererator, crisis_time, colorize
+from generate import merge_quay_crane_assignement, sepererator, crisis_time
+from gen_log_file import *
 
 
 NB_POPULATION = 10
@@ -70,8 +71,6 @@ def find_new_starting_time(ls_quays, ls_time, boat, service_time):
 			ls_quays[k-1].starting_time = boat.starting_time
 			ls_quays[0].time_freed = boat.starting_time + service_time
 			ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
-		#for elem in ls_time : 
-			#print("PERMUT   /  commence a : " +str(elem.starting_time)+"  et fini a : "+str(elem.time_freed) +" au quai : "+str(elem.lib))
 	except IndexError: 
 		print("un seul quay")
 	return ls_time, ls_quays, boat
@@ -101,8 +100,6 @@ def mutation(sol) :
 		quay_two_ls = [elem for elem in sol.list_quays if elem.lib == gene_two_ind]
 		times_one_ls = [elem for elem in sol.list_time if elem.lib == gene_one_ind]
 		times_two_ls = [elem for elem in sol.list_time if elem.lib == gene_two_ind]
-		#print(quay_one_ls) #c est ces lists quon va manipuler
-		#print(quay_two_ls)
 		try : 
 			boat_one_q = rdm.choice(quay_one_ls)
 			boat_two_q = rdm.choice(quay_two_ls)
@@ -115,10 +112,6 @@ def mutation(sol) :
 	boat_two = sol.list_boat[ind_two]
 	sol.list_quays = delete_list_from_list(sol.list_quays, quay_one_ls, quay_two_ls)
 	sol.list_time = delete_list_from_list(sol.list_time, times_one_ls, times_two_ls)
-	#print(" Boat_1 :  "  +str(boat_one.arrival_time))
-	#print(" Boat_2 :  "  +str(boat_two.arrival_time))
-	#for elem in times_one_ls : 
-		#print("de "+str(elem.starting_time)+" a "+str(elem.time_freed))
 	times_one_ls_modified, ls_quay_one_modified, boat_two_modified,  = find_new_starting_time(quay_one_ls, times_one_ls, boat_two, boat_two.compute_time())
 	times_two_ls_modified, ls_quay_two_modified, boat_one_modified  = find_new_starting_time(quay_two_ls, times_two_ls, boat_one, boat_one.compute_time())
 	sol = update(sol, times_one_ls_modified, ls_quay_one_modified, boat_two_modified, times_two_ls_modified, ls_quay_two_modified, boat_one_modified, ind_one, ind_two)
@@ -135,9 +128,7 @@ def update(sol, time_one, quay_one, boat_two, time_two, quay_two, boat_one, ind_
 	sol.list_boat[ind_two] = boat_two
 	sol.list_quays = add(sol.list_quays, quay_one, quay_two)
 	sol.list_time = add(sol.list_time, time_one, time_two)
-	
-	for elem in zip(sol.list_boat, sol.list_quays):
-		print(colorize(str(elem[0].type_boat), ansi=30)+"  :: arrive à "+colorize(str(elem[0].arrival_time), ansi = 2)+" servi à : "+colorize(str(elem[0].starting_time), ansi = 3)+" fini à : "+colorize(str(elem[0].ending_time), ansi=5)+" au quai N° : "+colorize(str(elem[1].lib), ansi=2) + " avec un delay de :" + colorize(str(abs(elem[0].arrival_time - elem[0].starting_time)), ansi=95))
+	current_thread(sol)
 	return sol
 	
 	
@@ -146,11 +137,10 @@ def update(sol, time_one, quay_one, boat_two, time_two, quay_two, boat_one, ind_
 class Solution : 
 	"""la classe solution permet de definir une solution au probleme (ie) une solution represntable sous forme de GANTT. Elle est caracterisee par un float Performance qui nous informe sur le rendement """
 	def __init__(self, list_boat, list_time, list_quays, list_delays, crisis) :
-		"""On la remplir avec un vecteur de bateaux et un autre vecteur sur les heures de departs et darrivee. Finalement un troisieme vecteur sur le nombre de grues. """
 		self.list_boat   = list_boat                   
 		self.list_time   = list_time                   
 		self.list_quays  = list_quays 
-		self.list_delays = list_delays    # on aura besoin de calculer le tempsd'attente entre l'arrivee et le depart pour computer les perfs 
+		self.list_delays = list_delays  
 		self.crisis_time = crisis
 		self.performance = self.compute()
 	def compute(self) : 
@@ -179,10 +169,6 @@ def generate() :
 
 if __name__ == "__main__" : 
 	sol = generate()
-	#mutated = mutation(sol)
-	#print(mutated.list_boat == sol.list_boat)
-	#print(mutated.list_boat)
-	#sepererator()
 	for i in range(3) : 
 		sol = mutation(sol)
 		print(sol.compute())
