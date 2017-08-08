@@ -1,6 +1,11 @@
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot
+import random
 import plotly.figure_factory as ff
 from core import * 
+
+def random_color():
+    levels = range(32,256,32)
+    return tuple(random.choice(levels) for _ in range(3))
 
 fast_conv = lambda x : x.strftime('%Y-%m-%d %H:%M')
 
@@ -15,7 +20,8 @@ def plot_gantt(sol):
 	r, g, b = 100, 20, 50 
 	colors = dict()
 	for boat in ls_ress : 
-		colors[boat] = 'rgb('+str(r)+', '+str(g)+', '+str(b)+')'
+		T = random_color()
+		colors[boat] = 'rgb('+str(T[0])+', '+str(T[1])+', '+str(T[2])+')'
 		for k in [r, g, b] : 
 			k += 20
 			
