@@ -24,12 +24,6 @@ def plot_gantt(sol):
 		colors[boat] = 'rgb('+str(T[0])+', '+str(T[1])+', '+str(T[2])+')'
 		for k in [r, g, b] : 
 			k += 20
-			
-	#colors = dict(Cardio = 'rgb(46, 137, 205)',
-				#Food = 'rgb(114, 44, 121)',
-				#Sleep = 'rgb(198, 47, 105)',
-				#Brain = 'rgb(58, 149, 136)',
-				#Rest = 'rgb(107, 127, 135)')
 	fig = ff.create_gantt(df, colors=colors, index_col='Resource', title='Daily Schedule', show_colorbar=True, bar_width=0.4, showgrid_x=True, showgrid_y=True, group_tasks=True)
 	plot(fig)
 	

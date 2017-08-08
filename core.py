@@ -72,6 +72,7 @@ import random as rdm
 from load import Boat, VesselTime
 import datetime
 from generate import merge_quay_crane_assignement, sepererator, crisis_time
+from gantt_generator import *
 from gen_log_file import *
 
 
@@ -128,7 +129,7 @@ def delete_list_from_list(ls,l_a, l_b):
 
 
 def mutation(sol) : 
-	"""Prends une solution et pick deux quays aléatoirement """ 
+	"""Takes an instance of Solution(list_vessels, list_quays, list_times) as Input and return the mutated version.""" 
 	state = True
 	while(state) : 
 		if choose(PARENT_CHOICE) : 
@@ -136,11 +137,6 @@ def mutation(sol) :
 		else : 
 			parents = rdm.sample([1, 6], 2)  #bof
 		gene_one_ind, gene_two_ind = parents[0], parents[1]
-		#print(gene_one_ind)
-		#print(gene_two_ind)
-		print("######")
-		#for quay in sol.list_quays : 
-			#print(quay.time_freed)
 		quay_one_ls =[elem for elem in sol.list_quays if elem.lib == gene_one_ind]
 		quay_two_ls = [elem for elem in sol.list_quays if elem.lib == gene_two_ind]
 		times_one_ls = [elem for elem in sol.list_time if elem.lib == gene_one_ind]
@@ -160,6 +156,7 @@ def mutation(sol) :
 	times_one_ls_modified, ls_quay_one_modified, boat_two_modified,  = find_new_starting_time(quay_one_ls, times_one_ls, boat_two, boat_two.compute_time())
 	times_two_ls_modified, ls_quay_two_modified, boat_one_modified  = find_new_starting_time(quay_two_ls, times_two_ls, boat_one, boat_one.compute_time())
 	sol = update(sol, times_one_ls_modified, ls_quay_one_modified, boat_two_modified, times_two_ls_modified, ls_quay_two_modified, boat_one_modified, ind_one, ind_two)
+	plot_gantt(sol)
 	return sol
 	
 def update(sol, time_one, quay_one, boat_two, time_two, quay_two, boat_one, ind_one, ind_two):
@@ -215,8 +212,10 @@ def generate() :
 
 if __name__ == "__main__" : 
 	sol = generate()
+	plot_gantt(sol)
 	for i in range(3) : 
 		sol = mutation(sol)
 		print(sol.compute())
+		
 	
 	
