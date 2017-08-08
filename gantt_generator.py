@@ -4,7 +4,7 @@ import plotly.figure_factory as ff
 from core import * 
 
 def random_color():
-    levels = range(32,256,32)
+    levels = range(10,256,32)
     return tuple(random.choice(levels) for _ in range(3))
 
 fast_conv = lambda x : x.strftime('%Y-%m-%d %H:%M')
