@@ -71,6 +71,7 @@ def assign_quay(boat, service_duration) :
 		q.starting_time = max(q.time_freed, boat.arrival_time) 
 		q.time_freed = q.starting_time + service_duration
 		q.queue = True
+		q.vessels_in.append(boat)
 		#ls_quays_busy[indc] = q 
 		quays[ ind ] = q
 	else : 
@@ -78,6 +79,7 @@ def assign_quay(boat, service_duration) :
 		q.starting_time = max(q.time_freed, boat.arrival_time)
 		q.time_freed = q.starting_time + service_duration
 		q.queue = True
+		q.vessels_in.append(boat)
 		ind = quays.index(q)
 		quays[ ind ] = q
 	#print("quai se libère a : " + str(q.time_freed))

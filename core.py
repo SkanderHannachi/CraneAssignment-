@@ -87,6 +87,17 @@ def suppr(ls, l) :
         ls.remove(elem) 
     return ls
 
+#def find_new_starting_time(ls_quays, ls_time, boat, service_time):
+	#bl, state, k = True, False, 1
+		#try : 	
+			#while ((k < len(ls_time)) and ( (bl==False)) ): 
+				#dis = ls_time[k].time_freed - ls_time[k-1].starting_time
+				#if dis < service_time : 
+					##print("Jocker!")
+					#bl = False
+
+
+
 def find_new_starting_time(ls_quays, ls_time, boat, service_time):
 	bl, state, k = True, False, 1
 	try : 	
@@ -114,7 +125,7 @@ def find_new_starting_time(ls_quays, ls_time, boat, service_time):
 		elif (state == True) : 
 			boat.starting_time = boat.arrival_time 
 			boat.ending_time  = boat.starting_time + service_time 
-			ls_quays[k-1].starting_time = boat.starting_time
+			ls_quays[k].starting_time = boat.starting_time
 			ls_quays[0].time_freed = boat.starting_time + service_time
 			ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
 	except IndexError: 
@@ -151,8 +162,10 @@ def mutation(sol) :
 	ind_two = sol.list_quays.index(boat_two_q)
 	boat_one = sol.list_boat[ind_one]
 	boat_two = sol.list_boat[ind_two]
+	sol.list_boat[ind_two], sol.list_boat[ind_one] = sol.list_boat[ind_one], sol.list_boat[ind_two]
 	sol.list_quays = delete_list_from_list(sol.list_quays, quay_one_ls, quay_two_ls)
 	sol.list_time = delete_list_from_list(sol.list_time, times_one_ls, times_two_ls)
+	print(times_one_ls)
 	times_one_ls_modified, ls_quay_one_modified, boat_two_modified,  = find_new_starting_time(quay_one_ls, times_one_ls, boat_two, boat_two.compute_time())
 	times_two_ls_modified, ls_quay_two_modified, boat_one_modified  = find_new_starting_time(quay_two_ls, times_two_ls, boat_one, boat_one.compute_time())
 	sol = update(sol, times_one_ls_modified, ls_quay_one_modified, boat_two_modified, times_two_ls_modified, ls_quay_two_modified, boat_one_modified, ind_one, ind_two)
@@ -174,7 +187,6 @@ def update(sol, time_one, quay_one, boat_two, time_two, quay_two, boat_one, ind_
 	return sol
 	
 	
-    
     
 class Solution : 
 	"""la classe solution permet de definir une solution au probleme (ie) une solution represntable sous forme de GANTT. Elle est caracterisee par un float Performance qui nous informe sur le rendement """
@@ -213,7 +225,7 @@ def generate() :
 if __name__ == "__main__" : 
 	sol = generate()
 	plot_gantt(sol)
-	for i in range(3) : 
+	for i in range(2) : 
 		sol = mutation(sol)
 		print(sol.compute())
 		

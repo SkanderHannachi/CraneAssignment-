@@ -41,6 +41,7 @@ class Quay :
 		self.starting_time = START
 		self.lib = lib
 		self.queue= False
+		self.vessels_in=[]
 	def __gt__(self, autre): 
 		return self.time_freed > autre.time_freed
 class Boat : 
