@@ -21,17 +21,6 @@ def sepererator() :
 	except NameError:
 		print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-#def compute_time(boat) :
-	#if boat.type_boat == "PC" : 
-			#nb_crane_assgn = 1
-			#service_time = boat.capa_cont /nb_crane_assgn
-			#service_time = datetime.timedelta(0,60 * service_time)
-	#if boat.type_boat == "RORO" : 
-		#manu = boat.capa_remor
-		#min_total = ( 40 / 60 ) *  boat.capa_cont 
-		#delta_assignement = max(datetime.timedelta(0,60 * min_total), datetime.timedelta(0,60 *  manu  ))
-		#service_time = datetime.timedelta(0,60 *  manu  )
-	#return service_time
 
 def merge_quay_crane_assignement() : 
 	global crisis_time
@@ -49,11 +38,10 @@ def merge_quay_crane_assignement() :
 		boat.ending_time = boat.departure if abs(boat.ending_time-boat.arrival_time) > abs(boat.departure-boat.arrival_time) else boat.ending_time 
 		B = boat
 		time = (B.arrival_time, B.ending_time)
-		try : 
-			print(colorize(str(B.type_boat), ansi=30)+"  :: arrive à "+colorize(str(B.arrival_time), ansi = 2)+" servi à : "+colorize(str(B.starting_time), ansi = 3)+" fini à : "+colorize(str(B.ending_time), ansi=5)+" au quai N° : "+colorize(str(Q.lib), ansi=2) + " avec un delay de :" + colorize(str(abs(B.arrival_time - B.starting_time)), ansi=95))
-		except NameError : 
-			"""on utilise ch pour ecrire dans le fichier log """
-			print(ch = str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib) + " avec un delay de :" + str(abs(B.arrival_time - B.starting_time)))
+		#try : 
+			#print(colorize(str(B.type_boat), ansi=30)+"  :: arrive à "+colorize(str(B.arrival_time), ansi = 2)+" servi à : "+colorize(str(B.starting_time), ansi = 3)+" fini à : "+colorize(str(B.ending_time), ansi=5)+" au quai N° : "+colorize(str(Q.lib), ansi=2) + " avec un delay de :" + colorize(str(abs(B.arrival_time - B.starting_time)), ansi=95))
+		#except NameError : 
+			#print(ch = str(B.type_boat)+"  :: arrive à "+str(B.arrival_time)+" servi à : "+str(B.starting_time)+" fini à : "+str(B.ending_time)+" au quai N° : "+str(Q.lib) + " avec un delay de :" + str(abs(B.arrival_time - B.starting_time)))
 		sepererator()
 		Q.time_freed = B.ending_time
 		#Q.starting_time = B.ending_time
