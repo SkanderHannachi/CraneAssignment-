@@ -21,6 +21,51 @@ Une idee : raisonner sur le delay time pour améliorer les perfo à chaque epoch
 [<load.Quay object at 0x7f2eca742e48>, <load.Quay object at 0x7f2eca74a978>, <load.Quay object at 0x7f2eca74a9e8>, <load.Quay object at 0x7f2eca742da0>, <load.Quay object at 0x7f2eca742da0>, <load.Quay object at 0x7f2eca74a978>, <load.Quay object at 0x7f2eca74a9e8>, <load.Quay object at 0x7f2eca74a978>, <load.Quay object at 0x7f2eca74a978>]
 
 
+######
+RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-01 06:00:00 fini à : 2017-01-01 08:16:00 au quai N° : 3 matricule : VEGA91
+RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-01 06:00:00 fini à : 2017-01-01 08:40:00 au quai N° : 5 matricule : GIQF79
+RORO arrive à 2017-01-01 08:00:00 servi à : 2017-01-01 08:00:00 fini à : 2017-01-01 11:20:00 au quai N° : 2 matricule : RZNA64
+PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 18:30:00 fini à : 2017-01-02 01:45:00 au quai N° : 4 matricule : ONQL64
+PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 22:21:00 fini à : 2017-01-02 02:17:00 au quai N° : 2 matricule : CUVJ19
+PC arrive à 2017-01-01 09:30:00 servi à : 2017-01-01 12:56:00 fini à : 2017-01-01 18:30:00 au quai N° : 4 matricule : TZSY12
+RORO arrive à 2017-01-01 11:40:00 servi à : 2017-01-01 11:40:00 fini à : 2017-01-01 14:40:00 au quai N° : 2 matricule : FILG51
+RORO arrive à 2017-01-01 12:00:00 servi à : 2017-01-01 12:00:00 fini à : 2017-01-01 15:30:00 au quai N° : 2 matricule : ISNU49
+RORO arrive à 2017-01-01 13:50:00 servi à : 2017-01-01 14:40:00 fini à : 2017-01-01 18:00:00 au quai N° : 1 matricule : CTKN23
+PC arrive à 2017-01-01 15:40:00 servi à : 2017-01-01 16:15:00 fini à : 2017-01-01 22:21:00 au quai N° : 1 matricule : ZLXV33
+RORO arrive à 2017-01-01 16:00:00 servi à : 2017-01-01 16:00:00 fini à : 2017-01-01 18:40:00 au quai N° : 6 matricule : DZYO31
+RORO arrive à 2017-01-01 22:20:00 servi à : 2017-01-01 22:20:00 fini à : 2017-01-02 02:00:00 au quai N° : 6 matricule : RSZT62
+1 day, 3:42:00
+######
+RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-02 02:00:00 fini à : 2017-01-02 04:16:00 au quai N° : 5 matricule : VEGA91
+RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-01 06:00:00 fini à : 2017-01-01 08:40:00 au quai N° : 4 matricule : GIQF79
+RORO arrive à 2017-01-01 08:00:00 servi à : 2017-01-01 08:16:00 fini à : 2017-01-01 11:36:00 au quai N° : 4 matricule : RZNA64
+PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 18:30:00 fini à : 2017-01-02 01:45:00 au quai N° : 1 matricule : ONQL64
+PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 22:21:00 fini à : 2017-01-02 02:17:00 au quai N° : 1 matricule : CUVJ19
+PC arrive à 2017-01-01 09:30:00 servi à : 2017-01-01 12:56:00 fini à : 2017-01-01 18:30:00 au quai N° : 6 matricule : TZSY12
+RORO arrive à 2017-01-01 11:40:00 servi à : 2017-01-01 11:40:00 fini à : 2017-01-01 14:40:00 au quai N° : 6 matricule : FILG51
+RORO arrive à 2017-01-01 12:00:00 servi à : 2017-01-01 12:00:00 fini à : 2017-01-01 15:30:00 au quai N° : 2 matricule : ISNU49
+RORO arrive à 2017-01-01 13:50:00 servi à : 2017-01-01 14:40:00 fini à : 2017-01-01 18:00:00 au quai N° : 2 matricule : CTKN23
+PC arrive à 2017-01-01 15:40:00 servi à : 2017-01-01 16:15:00 fini à : 2017-01-01 22:21:00 au quai N° : 2 matricule : ZLXV33
+RORO arrive à 2017-01-01 16:00:00 servi à : 2017-01-01 16:00:00 fini à : 2017-01-01 18:40:00 au quai N° : 2 matricule : DZYO31
+RORO arrive à 2017-01-01 22:20:00 servi à : 2017-01-01 22:20:00 fini à : 2017-01-02 02:00:00 au quai N° : 3 matricule : RSZT62
+1 day, 23:58:00
+######
+RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-02 02:00:00 fini à : 2017-01-02 04:16:00 au quai N° : 5 matricule : VEGA91
+RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-01 06:00:00 fini à : 2017-01-01 08:40:00 au quai N° : 4 matricule : GIQF79
+RORO arrive à 2017-01-01 08:00:00 servi à : 2017-01-01 08:16:00 fini à : 2017-01-01 11:36:00 au quai N° : 4 matricule : RZNA64
+PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-02 02:17:00 fini à : 2017-01-02 09:32:00 au quai N° : 2 matricule : ONQL64
+PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 22:21:00 fini à : 2017-01-02 02:17:00 au quai N° : 2 matricule : CUVJ19
+PC arrive à 2017-01-01 09:30:00 servi à : 2017-01-02 01:45:00 fini à : 2017-01-02 07:19:00 au quai N° : 2 matricule : TZSY12
+RORO arrive à 2017-01-01 11:40:00 servi à : 2017-01-01 11:40:00 fini à : 2017-01-01 14:40:00 au quai N° : 2 matricule : FILG51
+RORO arrive à 2017-01-01 12:00:00 servi à : 2017-01-01 12:00:00 fini à : 2017-01-01 15:30:00 au quai N° : 3 matricule : ISNU49
+RORO arrive à 2017-01-01 13:50:00 servi à : 2017-01-01 14:40:00 fini à : 2017-01-01 18:00:00 au quai N° : 1 matricule : CTKN23
+PC arrive à 2017-01-01 15:40:00 servi à : 2017-01-01 16:15:00 fini à : 2017-01-01 22:21:00 au quai N° : 1 matricule : ZLXV33
+RORO arrive à 2017-01-01 16:00:00 servi à : 2017-01-01 16:00:00 fini à : 2017-01-01 18:40:00 au quai N° : 6 matricule : DZYO31
+RORO arrive à 2017-01-01 22:20:00 servi à : 2017-01-01 22:20:00 fini à : 2017-01-02 02:00:00 au quai N° : 6 matricule : RSZT62
+2 days, 20:34:00
+
+
+
 """
 
 import random as rdm
@@ -148,6 +193,7 @@ class Solution :
 		for B in self.list_boat: 
 			S += abs(B.arrival_time - B.starting_time)
 		return S
+
 def seek_and_give_birth(ls_solution) : 
 	couple = find_besties(ls_solution)
 	child  = compute_next_indiv(couple[0], couple[1])
