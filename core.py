@@ -160,7 +160,12 @@ def mutation(sol) :
 			state = True
 	ind_one = sol.list_quays.index(boat_one_q)
 	ind_two = sol.list_quays.index(boat_two_q)
-	quay_one_ls[ind_one].remove(ind_one)
+	quay_one_ls.index
+	for q in zip(quay_one_ls, quay_two_ls) : 
+		if boat_one_q in  q[0].vessels_in :
+			q[0].vessels_in.remove(boat_one_q)
+		if boat_two_q in q[1].vessels_in : 
+			q[1].vessels_in.remove(boat_two_q)
 	boat_one = sol.list_boat[ind_one]
 	boat_two = sol.list_boat[ind_two]
 	sol.list_boat[ind_two], sol.list_boat[ind_one] = sol.list_boat[ind_one], sol.list_boat[ind_two]
@@ -224,11 +229,11 @@ def generate() :
 	return adam
 
 if __name__ == "__main__" : 
-	sol = generate()
-	plot_gantt(sol)
+	solution = generate()
+	plot_gantt(solution)
 	for i in range(2) : 
-		sol = mutation(sol)
-		print(sol.compute())
+		sol = mutation(solution)
+		#print(sol.))
 		
 	
 	
