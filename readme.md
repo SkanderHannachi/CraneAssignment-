@@ -22,3 +22,5 @@ Pour generer les solutions initiales :
 * On repete l'operation avec tous les bateaux
 	
 
+A la sortie, un gantt est généré: 
+	![vessels](https://user-images.githubusercontent.com/21022345/29211239-2cd38ade-7e98-11e7-934d-26fffbf60491.png)
