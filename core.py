@@ -1,73 +1,3 @@
-"""PA et PB sont deux parents (deux solutions). La mutaion est le cas particulier 
-	mutation(adam) == crossover(adam, adam) la mutation est la forme quadratique associée à la la forme bilinéaire symétrique de la fnc crossover. 
-
-Une idee : raisonner sur le delay time pour améliorer les perfo à chaque epoch, ie : chercher ceux succebtibles de se permuter et possédant un delay time > 0 
-
-
-%%%%%%%%%
-[<load.Quay object at 0x7f6bb01499e8>, <load.Quay object at 0x7f6bb01499e8>]
------
-[<load.Quay object at 0x7f6bb0140e48>, <load.Quay object at 0x7f6bb0140dd8>, <load.Quay object at 0x7f6bb01499b0>, <load.Quay object at 0x7f6bb0149978>, <load.Quay object at 0x7f6bb01499b0>, <load.Quay object at 0x7f6bb0149978>, <load.Quay object at 0x7f6bb01499b0>, <load.Quay object at 0x7f6bb01499b0>]
-
-
-
-%%%%%%%%%
-[<load.Quay object at 0x7f2eca74a9b0>, <load.Quay object at 0x7f2eca74a9b0>]
------
-[<load.Quay object at 0x7f2eca742e48>, <load.Quay object at 0x7f2eca74a978>, <load.Quay object at 0x7f2eca74a9e8>, <load.Quay object at 0x7f2eca742da0>, <load.Quay object at 0x7f2eca742da0>, <load.Quay object at 0x7f2eca74a978>, <load.Quay object at 0x7f2eca74a9e8>, <load.Quay object at 0x7f2eca74a978>, <load.Quay object at 0x7f2eca74a978>]
-%%%%%%%%%
-[<load.Quay object at 0x7f2eca742dd8>]
------
-[<load.Quay object at 0x7f2eca742e48>, <load.Quay object at 0x7f2eca74a978>, <load.Quay object at 0x7f2eca74a9e8>, <load.Quay object at 0x7f2eca742da0>, <load.Quay object at 0x7f2eca742da0>, <load.Quay object at 0x7f2eca74a978>, <load.Quay object at 0x7f2eca74a9e8>, <load.Quay object at 0x7f2eca74a978>, <load.Quay object at 0x7f2eca74a978>]
-
-
-######
-RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-01 06:00:00 fini à : 2017-01-01 08:16:00 au quai N° : 3 matricule : VEGA91
-RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-01 06:00:00 fini à : 2017-01-01 08:40:00 au quai N° : 5 matricule : GIQF79
-RORO arrive à 2017-01-01 08:00:00 servi à : 2017-01-01 08:00:00 fini à : 2017-01-01 11:20:00 au quai N° : 2 matricule : RZNA64
-PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 18:30:00 fini à : 2017-01-02 01:45:00 au quai N° : 4 matricule : ONQL64
-PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 22:21:00 fini à : 2017-01-02 02:17:00 au quai N° : 2 matricule : CUVJ19
-PC arrive à 2017-01-01 09:30:00 servi à : 2017-01-01 12:56:00 fini à : 2017-01-01 18:30:00 au quai N° : 4 matricule : TZSY12
-RORO arrive à 2017-01-01 11:40:00 servi à : 2017-01-01 11:40:00 fini à : 2017-01-01 14:40:00 au quai N° : 2 matricule : FILG51
-RORO arrive à 2017-01-01 12:00:00 servi à : 2017-01-01 12:00:00 fini à : 2017-01-01 15:30:00 au quai N° : 2 matricule : ISNU49
-RORO arrive à 2017-01-01 13:50:00 servi à : 2017-01-01 14:40:00 fini à : 2017-01-01 18:00:00 au quai N° : 1 matricule : CTKN23
-PC arrive à 2017-01-01 15:40:00 servi à : 2017-01-01 16:15:00 fini à : 2017-01-01 22:21:00 au quai N° : 1 matricule : ZLXV33
-RORO arrive à 2017-01-01 16:00:00 servi à : 2017-01-01 16:00:00 fini à : 2017-01-01 18:40:00 au quai N° : 6 matricule : DZYO31
-RORO arrive à 2017-01-01 22:20:00 servi à : 2017-01-01 22:20:00 fini à : 2017-01-02 02:00:00 au quai N° : 6 matricule : RSZT62
-1 day, 3:42:00
-######
-RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-02 02:00:00 fini à : 2017-01-02 04:16:00 au quai N° : 5 matricule : VEGA91
-RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-01 06:00:00 fini à : 2017-01-01 08:40:00 au quai N° : 4 matricule : GIQF79
-RORO arrive à 2017-01-01 08:00:00 servi à : 2017-01-01 08:16:00 fini à : 2017-01-01 11:36:00 au quai N° : 4 matricule : RZNA64
-PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 18:30:00 fini à : 2017-01-02 01:45:00 au quai N° : 1 matricule : ONQL64
-PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 22:21:00 fini à : 2017-01-02 02:17:00 au quai N° : 1 matricule : CUVJ19
-PC arrive à 2017-01-01 09:30:00 servi à : 2017-01-01 12:56:00 fini à : 2017-01-01 18:30:00 au quai N° : 6 matricule : TZSY12
-RORO arrive à 2017-01-01 11:40:00 servi à : 2017-01-01 11:40:00 fini à : 2017-01-01 14:40:00 au quai N° : 6 matricule : FILG51
-RORO arrive à 2017-01-01 12:00:00 servi à : 2017-01-01 12:00:00 fini à : 2017-01-01 15:30:00 au quai N° : 2 matricule : ISNU49
-RORO arrive à 2017-01-01 13:50:00 servi à : 2017-01-01 14:40:00 fini à : 2017-01-01 18:00:00 au quai N° : 2 matricule : CTKN23
-PC arrive à 2017-01-01 15:40:00 servi à : 2017-01-01 16:15:00 fini à : 2017-01-01 22:21:00 au quai N° : 2 matricule : ZLXV33
-RORO arrive à 2017-01-01 16:00:00 servi à : 2017-01-01 16:00:00 fini à : 2017-01-01 18:40:00 au quai N° : 2 matricule : DZYO31
-RORO arrive à 2017-01-01 22:20:00 servi à : 2017-01-01 22:20:00 fini à : 2017-01-02 02:00:00 au quai N° : 3 matricule : RSZT62
-1 day, 23:58:00
-######
-RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-02 02:00:00 fini à : 2017-01-02 04:16:00 au quai N° : 5 matricule : VEGA91
-RORO arrive à 2017-01-01 06:00:00 servi à : 2017-01-01 06:00:00 fini à : 2017-01-01 08:40:00 au quai N° : 4 matricule : GIQF79
-RORO arrive à 2017-01-01 08:00:00 servi à : 2017-01-01 08:16:00 fini à : 2017-01-01 11:36:00 au quai N° : 4 matricule : RZNA64
-PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-02 02:17:00 fini à : 2017-01-02 09:32:00 au quai N° : 2 matricule : ONQL64
-PC arrive à 2017-01-01 09:00:00 servi à : 2017-01-01 22:21:00 fini à : 2017-01-02 02:17:00 au quai N° : 2 matricule : CUVJ19
-PC arrive à 2017-01-01 09:30:00 servi à : 2017-01-02 01:45:00 fini à : 2017-01-02 07:19:00 au quai N° : 2 matricule : TZSY12
-RORO arrive à 2017-01-01 11:40:00 servi à : 2017-01-01 11:40:00 fini à : 2017-01-01 14:40:00 au quai N° : 2 matricule : FILG51
-RORO arrive à 2017-01-01 12:00:00 servi à : 2017-01-01 12:00:00 fini à : 2017-01-01 15:30:00 au quai N° : 3 matricule : ISNU49
-RORO arrive à 2017-01-01 13:50:00 servi à : 2017-01-01 14:40:00 fini à : 2017-01-01 18:00:00 au quai N° : 1 matricule : CTKN23
-PC arrive à 2017-01-01 15:40:00 servi à : 2017-01-01 16:15:00 fini à : 2017-01-01 22:21:00 au quai N° : 1 matricule : ZLXV33
-RORO arrive à 2017-01-01 16:00:00 servi à : 2017-01-01 16:00:00 fini à : 2017-01-01 18:40:00 au quai N° : 6 matricule : DZYO31
-RORO arrive à 2017-01-01 22:20:00 servi à : 2017-01-01 22:20:00 fini à : 2017-01-02 02:00:00 au quai N° : 6 matricule : RSZT62
-2 days, 20:34:00
-
-
-
-"""
-
 import random as rdm
 from load import Boat, VesselTime
 import datetime
@@ -160,18 +90,19 @@ def mutation(sol) :
 			state = True
 	ind_one = sol.list_quays.index(boat_one_q)
 	ind_two = sol.list_quays.index(boat_two_q)
-	quay_one_ls.index
-	for q in zip(quay_one_ls, quay_two_ls) : 
-		if boat_one_q in  q[0].vessels_in :
-			q[0].vessels_in.remove(boat_one_q)
-		if boat_two_q in q[1].vessels_in : 
-			q[1].vessels_in.remove(boat_two_q)
 	boat_one = sol.list_boat[ind_one]
 	boat_two = sol.list_boat[ind_two]
-	sol.list_boat[ind_two], sol.list_boat[ind_one] = sol.list_boat[ind_one], sol.list_boat[ind_two]
+	for q in zip(quay_one_ls, quay_two_ls) : 
+		if boat_one in  q[0].vessels_in :
+			print("supression..")
+			q[0].vessels_in.remove(boat_one)
+		if boat_two in q[1].vessels_in : 
+			print("supression..")
+			q[1].vessels_in.remove(boat_two)
+	sol.list_boat[ind_two], sol.list_boat[ind_one] = sol.list_boat[ind_one], sol.list_boat[ind_two]  ###wrong
 	sol.list_quays = delete_list_from_list(sol.list_quays, quay_one_ls, quay_two_ls)
 	sol.list_time = delete_list_from_list(sol.list_time, times_one_ls, times_two_ls)
-	print(times_one_ls)
+	#print(times_one_ls)
 	times_one_ls_modified, ls_quay_one_modified, boat_two_modified,  = find_new_starting_time(quay_one_ls, times_one_ls, boat_two, boat_two.compute_time())
 	times_two_ls_modified, ls_quay_two_modified, boat_one_modified  = find_new_starting_time(quay_two_ls, times_two_ls, boat_one, boat_one.compute_time())
 	sol = update(sol, times_one_ls_modified, ls_quay_one_modified, boat_two_modified, times_two_ls_modified, ls_quay_two_modified, boat_one_modified, ind_one, ind_two)
@@ -230,9 +161,8 @@ def generate() :
 
 if __name__ == "__main__" : 
 	solution = generate()
-	plot_gantt(solution)
-	for i in range(2) : 
-		sol = mutation(solution)
+	#plot_gantt(solution)
+	sol = mutation(solution)
 		#print(sol.))
 		
 	
