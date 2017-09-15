@@ -1,7 +1,7 @@
 import random as rdm
 from load import Boat, VesselTime
 import datetime
-from generate import merge_quay_crane_assignement, sepererator, crisis_time
+from generate import merge_quay_crane_assignement, crisis_time
 from gantt_generator import *
 from gen_log_file import *
 
@@ -17,14 +17,25 @@ def suppr(ls, l) :
         ls.remove(elem) 
     return ls
 
+
+def delete_list_from_list(ls,l_a, l_b): 
+	for elem in [l_a, l_b] : 
+		ls = suppr(ls, elem)
+	return ls
+
+
 #def find_new_starting_time(ls_quays, ls_time, boat, service_time):
 	#bl, state, k = True, False, 1
 		#try : 	
 			#while ((k < len(ls_time)) and ( (bl==False)) ): 
-				#dis = ls_time[k].time_freed - ls_time[k-1].starting_time
-				#if dis < service_time : 
-					##print("Jocker!")
-					#bl = False
+				#dis = ls_time[k].starting_time - ls_time[k-1].time_freed
+				#if (boat.starting_time > ls_time[k].time_freed) and (dis + boat.starting_time < ls_time[k].starting_time) : 
+					
+				#elif 
+				
+				
+				
+
 
 
 
@@ -32,7 +43,7 @@ def find_new_starting_time(ls_quays, ls_time, boat, service_time):
 	bl, state, k = True, False, 1
 	try : 	
 		while ((k < len(ls_time)) and ( (bl==False)) ): 
-			dis = ls_time[k].time_freed - ls_time[k-1].starting_time
+			dis = ls_time[k].starting_time - ls_time[k-1].time_freed
 			if dis < service_time : 
 				#print("Jocker!")
 				bl = False
@@ -63,11 +74,6 @@ def find_new_starting_time(ls_quays, ls_time, boat, service_time):
 	return ls_time, ls_quays, boat
 		
 
-def delete_list_from_list(ls,l_a, l_b): 
-	for elem in [l_a, l_b] : 
-		ls = suppr(ls, elem)
-	return ls
-
 
 def mutation(sol) : 
 	"""Takes an instance of Solution(list_vessels, list_quays, list_times) as Input and return the mutated version.""" 
@@ -76,7 +82,7 @@ def mutation(sol) :
 		if choose(PARENT_CHOICE) : 
 			parents = rdm.sample([2,3,4,5], 2)
 		else : 
-			parents = rdm.sample([1, 6], 2)  #bof
+			parents = rdm.sample([1, 6], 2)  
 		gene_one_ind, gene_two_ind = parents[0], parents[1]
 		quay_one_ls =[elem for elem in sol.list_quays if elem.lib == gene_one_ind]
 		quay_two_ls = [elem for elem in sol.list_quays if elem.lib == gene_two_ind]
@@ -99,14 +105,17 @@ def mutation(sol) :
 		if boat_two in q[1].vessels_in : 
 			print("supression..")
 			q[1].vessels_in.remove(boat_two)
-	sol.list_boat[ind_two], sol.list_boat[ind_one] = sol.list_boat[ind_one], sol.list_boat[ind_two]  ###wrong
+	#updating vessels
+	print(sol)
+	sol.list_boat[ind_two], sol.list_boat[ind_one] = sol.list_boat[ind_one], sol.list_boat[ind_two]    
+	#updating quays and times
 	sol.list_quays = delete_list_from_list(sol.list_quays, quay_one_ls, quay_two_ls)
 	sol.list_time = delete_list_from_list(sol.list_time, times_one_ls, times_two_ls)
 	#print(times_one_ls)
 	times_one_ls_modified, ls_quay_one_modified, boat_two_modified,  = find_new_starting_time(quay_one_ls, times_one_ls, boat_two, boat_two.compute_time())
 	times_two_ls_modified, ls_quay_two_modified, boat_one_modified  = find_new_starting_time(quay_two_ls, times_two_ls, boat_one, boat_one.compute_time())
 	sol = update(sol, times_one_ls_modified, ls_quay_one_modified, boat_two_modified, times_two_ls_modified, ls_quay_two_modified, boat_one_modified, ind_one, ind_two)
-	plot_gantt(sol)
+	#plot_gantt(sol)
 	return sol
 	
 def update(sol, time_one, quay_one, boat_two, time_two, quay_two, boat_one, ind_one, ind_two):
@@ -120,10 +129,8 @@ def update(sol, time_one, quay_one, boat_two, time_two, quay_two, boat_one, ind_
 	sol.list_boat[ind_two] = boat_two
 	sol.list_quays = add(sol.list_quays, quay_one, quay_two)
 	sol.list_time = add(sol.list_time, time_one, time_two)
-	current_thread(sol)
+	#current_thread(sol)
 	return sol
-	
-	
     
 class Solution : 
 	"""la classe solution permet de definir une solution au probleme (ie) une solution represntable sous forme de GANTT. Elle est caracterisee par un float Performance qui nous informe sur le rendement """
@@ -139,6 +146,13 @@ class Solution :
 		for B in self.list_boat: 
 			S += abs(B.arrival_time - B.starting_time)
 		return S
+	def __repr__(self): #rajouter une conditon
+		ch = ""
+		for elem in zip(self.list_quays, self.list_boat):
+			ch += "vessel de type %s, arrive a : %s au quay n° %s , commence à : %s et fini à : %s  \n" % (elem[1].type_boat, elem[1].arrival_time, elem[0].lib, elem[0].starting_time, elem[0].time_freed)
+			ch += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n"
+		return ch
+
 
 def seek_and_give_birth(ls_solution) : 
 	couple = find_besties(ls_solution)
@@ -163,7 +177,6 @@ if __name__ == "__main__" :
 	solution = generate()
 	#plot_gantt(solution)
 	sol = mutation(solution)
-		#print(sol.))
-		
+
 	
 	

@@ -12,12 +12,6 @@ nb_crane = lambda : 2 if (rdm.random() > 0.7) else 1
 verif = lambda  boat, quay : (boat.type_boat == quay.type_quay)
 crisis_time = START
 
-def sepererator() :
-	try:
-		print(colorize("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", ansi=36))
-	except NameError:
-		print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-
 
 def merge_quay_crane_assignement() : 
 	global crisis_time
@@ -35,7 +29,7 @@ def merge_quay_crane_assignement() :
 		boat.ending_time = boat.departure if abs(boat.ending_time-boat.arrival_time) > abs(boat.departure-boat.arrival_time) else boat.ending_time 
 		B = boat
 		time = (B.arrival_time, B.ending_time)
-		sepererator()
+		#sepererator()
 		Q.time_freed = B.ending_time
 		#Q.starting_time = B.ending_time
 		V = VesselTime(B.starting_time, B.ending_time, Q.lib, Q)
@@ -43,11 +37,6 @@ def merge_quay_crane_assignement() :
 		list_boat.append(B)
 		list_time.append(V)
 		list_quays.append(Q)
-		#print("quai se libère a : " + str(Q.time_freed))
-	#for quay in list_quays : 
-		#print(str(quay.starting_time)+"  fini aa  ::  "+str(quay.time_freed)+" quai n° : " +str(quay.lib) )
-	for times in list_time : 
-		print(str(times.starting_time) + "  fini a "+str(times.time_freed)+"  au quai n : "+str(times.lib) )
 	return list_boat, list_time, list_quays, list_delays, crisis_time
 
 def assign_quay(boat, service_duration) : 
@@ -82,7 +71,6 @@ def assign_quay(boat, service_duration) :
 		q.vessels_in.append(boat)
 		ind = quays.index(q)
 		quays[ ind ] = q
-	#print("quai se libère a : " + str(q.time_freed))
 	return q
 
 def assign_crane(boat, service_duration): 
@@ -90,14 +78,8 @@ def assign_crane(boat, service_duration):
 	global cranes 
 	global cranes_queued
 	global crisis_time
-	#service_time = boat.arrival_time if boat.arrival_time > c[1].time_freed else c[1].time_freed
-	#if len(cranes) > 0 : 
-		#print(cranes)
-	#else : 
-		#print(cranes_queued)
 	if len(cranes) == 1: 
 		crisis_time = boat.arrival_time
-		print(crisis_time)
 	if len(cranes) == 0 : 
 		distance = [] 
 		for crane in cranes_queued : 
