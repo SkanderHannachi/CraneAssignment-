@@ -36,101 +36,106 @@ def delete_list_from_list(ls,l_a, l_b):
 				
 				
 
-
-
-
-def find_new_starting_time(ls_quays, ls_time, boat, service_time):
-	bl, state, k = True, False, 1
-	try : 	
-		while ((k < len(ls_time)) and ( (bl==False)) ): 
-			dis = ls_time[k].starting_time - ls_time[k-1].time_freed
-			if dis < service_time : 
-				#print("Jocker!")
-				bl = False
-				state = True
-			else : 
-				state = False
-				k += 1
-		if ( boat.arrival_time + service_time < ls_time[0].starting_time ) and (state == False): 
-			boat.starting_time = boat.arrival_time 
-			boat.ending_time  = boat.starting_time + service_time 
-			ls_quays[0].starting_time = boat.starting_time
-			ls_quays[0].time_freed = boat.starting_time + service_time
-			ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
-		elif (state == False) : 
-			boat.starting_time = ls_time[-1].time_freed 
-			boat.ending_time  = boat.starting_time + service_time 
-			ls_quays[-1].starting_time = boat.starting_time
-			ls_quays[-1].time_freed = boat.starting_time + service_time
-			ls_time[-1] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[-1].lib, ls_quays[-1]) #throw ls_time
-		elif (state == True) : 
-			boat.starting_time = boat.arrival_time 
-			boat.ending_time  = boat.starting_time + service_time 
-			ls_quays[k].starting_time = boat.starting_time
-			ls_quays[0].time_freed = boat.starting_time + service_time
-			ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
-	except IndexError: 
-		print("un seul quay")
-	return ls_time, ls_quays, boat
+class Mutation: 
+	def __init__ (self, solution):
+		self.solution = solution 
+		self.mutation_core()
 		
-
-
-def mutation(sol) : 
-	"""Takes an instance of Solution(list_vessels, list_quays, list_times) as Input and return the mutated version.""" 
-	state = True
-	while(state) : 
-		if choose(PARENT_CHOICE) : 
-			parents = rdm.sample([2,3,4,5], 2)
-		else : 
-			parents = rdm.sample([1, 6], 2)  
-		gene_one_ind, gene_two_ind = parents[0], parents[1]
-		quay_one_ls =[elem for elem in sol.list_quays if elem.lib == gene_one_ind]
-		quay_two_ls = [elem for elem in sol.list_quays if elem.lib == gene_two_ind]
-		times_one_ls = [elem for elem in sol.list_time if elem.lib == gene_one_ind]
-		times_two_ls = [elem for elem in sol.list_time if elem.lib == gene_two_ind]
-		try : 
-			boat_one_q = rdm.choice(quay_one_ls)
-			boat_two_q = rdm.choice(quay_two_ls)
-			state = False
-		except IndexError : 
-			state = True
-	ind_one = sol.list_quays.index(boat_one_q)
-	ind_two = sol.list_quays.index(boat_two_q)
-	boat_one = sol.list_boat[ind_one]
-	boat_two = sol.list_boat[ind_two]
-	for q in zip(quay_one_ls, quay_two_ls) : 
-		if boat_one in  q[0].vessels_in :
-			print("supression..")
-			q[0].vessels_in.remove(boat_one)
-		if boat_two in q[1].vessels_in : 
-			print("supression..")
-			q[1].vessels_in.remove(boat_two)
-	#updating vessels
-	print(sol)
-	sol.list_boat[ind_two], sol.list_boat[ind_one] = sol.list_boat[ind_one], sol.list_boat[ind_two]    
-	#updating quays and times
-	sol.list_quays = delete_list_from_list(sol.list_quays, quay_one_ls, quay_two_ls)
-	sol.list_time = delete_list_from_list(sol.list_time, times_one_ls, times_two_ls)
-	#print(times_one_ls)
-	times_one_ls_modified, ls_quay_one_modified, boat_two_modified,  = find_new_starting_time(quay_one_ls, times_one_ls, boat_two, boat_two.compute_time())
-	times_two_ls_modified, ls_quay_two_modified, boat_one_modified  = find_new_starting_time(quay_two_ls, times_two_ls, boat_one, boat_one.compute_time())
-	sol = update(sol, times_one_ls_modified, ls_quay_one_modified, boat_two_modified, times_two_ls_modified, ls_quay_two_modified, boat_one_modified, ind_one, ind_two)
-	#plot_gantt(sol)
-	return sol
+	def __repr__(self):
+		ch = seperator_2()
+		ch+= ""
+		return ch
 	
-def update(sol, time_one, quay_one, boat_two, time_two, quay_two, boat_one, ind_one, ind_two):
-	def add(ls, ll, l) : 
-		for elem in l : 
-			ls.append(elem)
-		for elem in ll : 
-			ls.append(elem)
-		return ls
-	sol.list_boat[ind_one] = boat_one
-	sol.list_boat[ind_two] = boat_two
-	sol.list_quays = add(sol.list_quays, quay_one, quay_two)
-	sol.list_time = add(sol.list_time, time_one, time_two)
-	#current_thread(sol)
-	return sol
+	def find_new_starting_time(self, ls_quays, ls_time, boat, service_time):
+		bl, state, k = True, False, 1
+		try : 	
+			while ((k < len(ls_time)) and ( (bl==False)) ): 
+				dis = ls_time[k].starting_time - ls_time[k-1].time_freed
+				if dis < service_time : 
+					#print("Jocker!")
+					bl = False
+					state = True
+				else : 
+					state = False
+					k += 1
+			if ( boat.arrival_time + service_time < ls_time[0].starting_time ) and (state == False): 
+				boat.starting_time = boat.arrival_time 
+				boat.ending_time  = boat.starting_time + service_time 
+				ls_quays[0].starting_time = boat.starting_time
+				ls_quays[0].time_freed = boat.starting_time + service_time
+				ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
+			elif (state == False) : 
+				boat.starting_time = ls_time[-1].time_freed 
+				boat.ending_time  = boat.starting_time + service_time 
+				ls_quays[-1].starting_time = boat.starting_time
+				ls_quays[-1].time_freed = boat.starting_time + service_time
+				ls_time[-1] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[-1].lib, ls_quays[-1]) #throw ls_time
+			elif (state == True) : 
+				boat.starting_time = boat.arrival_time 
+				boat.ending_time  = boat.starting_time + service_time 
+				ls_quays[k].starting_time = boat.starting_time
+				ls_quays[0].time_freed = boat.starting_time + service_time
+				ls_time[0] = VesselTime(boat.starting_time, boat.ending_time, ls_quays[0].lib, ls_quays[0]) #throw ls_time
+		except IndexError: 
+			print("un seul quay")
+		return ls_time, ls_quays, boat
+			
+	def mutation_core(self) : 
+		"""Takes an instance of Solution(list_vessels, list_quays, list_times) as Input and return the mutated version.""" 
+		state = True
+		while(state) : 
+			if choose(PARENT_CHOICE) : 
+				parents = rdm.sample([2,3,4,5], 2)
+			else : 
+				parents = rdm.sample([1, 6], 2)  
+			gene_one_ind, gene_two_ind = parents[0], parents[1]
+			quay_one_ls =[elem for elem in self.solution.list_quays if elem.lib == gene_one_ind]
+			quay_two_ls = [elem for elem in self.solution.list_quays if elem.lib == gene_two_ind]
+			times_one_ls = [elem for elem in self.solution.list_time if elem.lib == gene_one_ind]
+			times_two_ls = [elem for elem in self.solution.list_time if elem.lib == gene_two_ind]
+			try : 
+				boat_one_q = rdm.choice(quay_one_ls)
+				boat_two_q = rdm.choice(quay_two_ls)
+				state = False
+			except IndexError : 
+				state = True
+		ind_one = self.solution.list_quays.index(boat_one_q)
+		ind_two = self.solution.list_quays.index(boat_two_q)
+		boat_one = self.solution.list_boat[ind_one]
+		boat_two = self.solution.list_boat[ind_two]
+		for q in zip(quay_one_ls, quay_two_ls) : 
+			if boat_one in  q[0].vessels_in :
+				print("supression..")
+				q[0].vessels_in.remove(boat_one)
+			if boat_two in q[1].vessels_in : 
+				print("supression..")
+				q[1].vessels_in.remove(boat_two)
+		#updating vessels
+		print(self.solution)
+		self.solution.list_boat[ind_two], self.solution.list_boat[ind_one] = self.solution.list_boat[ind_one], self.solution.list_boat[ind_two]    
+		#updating quays and times
+		self.solution.list_quays = delete_list_from_list(self.solution.list_quays, quay_one_ls, quay_two_ls)
+		self.solution.list_time = delete_list_from_list(self.solution.list_time, times_one_ls, times_two_ls)
+		#print(times_one_ls)
+		times_one_ls_modified, ls_quay_one_modified, boat_two_modified,  = self.find_new_starting_time(quay_one_ls, times_one_ls, boat_two, boat_two.compute_time())
+		times_two_ls_modified, ls_quay_two_modified, boat_one_modified  = self.find_new_starting_time(quay_two_ls, times_two_ls, boat_one, boat_one.compute_time())
+		self.update(times_one_ls_modified, ls_quay_one_modified, boat_two_modified, times_two_ls_modified, ls_quay_two_modified, boat_one_modified, ind_one, ind_two)
+		#plot_gantt(sol)
+		#return self.solution
+			
+	def update(self, time_one, quay_one, boat_two, time_two, quay_two, boat_one, ind_one, ind_two):
+		def add(ls, ll, l) : 
+			for elem in l : 
+				ls.append(elem)
+			for elem in ll : 
+				ls.append(elem)
+			return ls
+		self.solution.list_boat[ind_one] = boat_one
+		self.solution.list_boat[ind_two] = boat_two
+		self.solution.list_quays = add(self.solution.list_quays, quay_one, quay_two)
+		self.solution.list_time = add(self.solution.list_time, time_one, time_two)
+		#current_thread(sol)
+		#return self.solution
     
 class Solution : 
 	"""la classe solution permet de definir une solution au probleme (ie) une solution represntable sous forme de GANTT. Elle est caracterisee par un float Performance qui nous informe sur le rendement """
@@ -176,7 +181,8 @@ def generate() :
 if __name__ == "__main__" : 
 	solution = generate()
 	#plot_gantt(solution)
-	sol = mutation(solution)
-
+	sol = Mutation(solution)
+	print("#################################################")
+	print(sol)
 	
 	
